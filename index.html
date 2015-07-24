@@ -17,8 +17,11 @@
   <div class="app" id="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}" ui-view></div>
 
 
+
   <!-- jQuery -->
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+
 
   <!-- Angular -->
   <script src="bower_components/angular/angular.js"></script>
@@ -33,7 +36,9 @@
   <script src="bower_components/ngstorage/ngStorage.js"></script>
   <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
 
+
   <!-- bootstrap -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.0/bootstrap.min.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <!-- lazyload -->
   <script src="bower_components/oclazyload/dist/ocLazyLoad.js"></script>
@@ -43,9 +48,19 @@
   <script src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
   <script src="bower_components/angular-translate-storage-local/angular-translate-storage-local.js"></script>
 
+
+
   <!-- Extra dependencies -->
   <!--<script src="js/extra-depedencies/angular-base64.min.js"></script>-->
   <script src="bower_components/angular-base64/angular-base64.min.js"></script>
+
+  <!-- Perfect scrollbar -->
+  <link rel="stylesheet" href="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.css" />
+  <script src="bower_components/perfect-scrollbar/min/perfect-scrollbar.min.js"></script>
+  <script src="bower_components/angular-perfect-scrollbar/src/angular-perfect-scrollbar.js"></script>
+
+  <!-- Modal service -->
+  <script src="bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
 
 
   <!-- App -->
@@ -67,7 +82,11 @@
   <script src="js/directives/ui-scroll.js"></script>
   <script src="js/directives/ui-shift.js"></script>
   <script src="js/directives/ui-toggleclass.js"></script>
+  <script src="js/controllers/dashboard/disarm_system_dialog.controller.js"></script>
+
+
 
   <!-- Lazy loading -->
+
 </body>
 </html>

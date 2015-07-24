@@ -15,5 +15,7 @@ angular.module('app', [
     'ui.jq',
     'oc.lazyLoad',
     'pascalprecht.translate',
-    'base64'
+    'base64',
+    'perfect_scrollbar',
+    'angularModalService'
 ]);

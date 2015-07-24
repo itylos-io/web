@@ -12,7 +12,6 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', '$localStor
     $scope.login = function () {
         $scope.authError = null;
         var authHeader = 'Basic ' + $base64.encode($scope.user.email + ':' + $scope.user.password);
-        //console.log(authHeader);
         $http({
             method: 'POST',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.login,

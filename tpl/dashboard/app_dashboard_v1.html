@@ -41,7 +41,9 @@
                     </div>
                     <div class="row row-sm text-center">
                         <div class="col-xs-4 show-system-state"></div>
-                        <div class="col-xs-4 show-full-width" ng-click="changeAlarmStatus(alarmIsActive)">
+
+                        <div class="col-xs-4 show-full-width"
+                             ng-click="alarmIsActive ? launchDisarmKeyboard(): armSystem()">
                             <div class="block panel padder-v btn btn-danger ng-untouched ng-valid ng-dirty"
                                  ng-class="(alarmIsActive) ? 'ng-valid-parse active' : ''">
                                 <span class="font-thin h1 block">
@@ -49,7 +51,6 @@
                                 </span>
                                 <span class="text-white text-xs">Click to {{alarmIsActive ? 'disarm' : 'arm'}}</span>
                             </div>
-                            <!-- class="btn btn-danger ng-untouched ng-valid ng-dirty" -->
                         </div>
                         <div class="col-xs-4 show-system-state"></div>
                     </div>
@@ -64,34 +65,38 @@
                         <h1 class="m-n font-thin h3">Zones</h1>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-striped b-t b-b"><!-- ui-jq="dataTable" ui-refresh="true"  -->
-                            <thead>
-                            <tr>
-                                <th style="width:20%"></th>
-                                <th style="width:50%">Name</th>
-                                <th style="width:30%">Enabled</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="z in zones">
-                                <td>
-                                    <div class="doony-circle doony-circle-failure" ng-show="eventsInZone[z.oid]"></div>
-                                    <div class="doony-circle doony-circle-success" ng-show="!eventsInZone[z.oid]"></div>
-                                </td>
-                                <td>{{z.name}}</td>
-                                <td>
-                                    <label class="i-switch bg-primary m-t-xs m-r"><!---->
-                                        <input type="checkbox"
-                                               ng-model="z.status"
-                                               ng-true-value="'ENABLED'" ng-false-value="'DISABLED'"
-                                               ng-disabled="alarmIsActive"
-                                               ng-change="changeZoneStatus(z)">
-                                        <i></i>
-                                    </label>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <perfect-scrollbar class="dashboardScroller">
+                            <table class="table table-striped b-t b-b"><!-- ui-jq="dataTable" ui-refresh="true"  -->
+                                <thead>
+                                <tr>
+                                    <th style="width:20%"></th>
+                                    <th style="width:50%">Name</th>
+                                    <th style="width:30%">Enabled</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="z in zones">
+                                    <td>
+                                        <div class="doony-circle doony-circle-failure"
+                                             ng-show="eventsInZone[z.oid]"></div>
+                                        <div class="doony-circle doony-circle-success"
+                                             ng-show="!eventsInZone[z.oid]"></div>
+                                    </td>
+                                    <td>{{z.name}}</td>
+                                    <td>
+                                        <label class="i-switch bg-primary m-t-xs m-r"><!---->
+                                            <input type="checkbox"
+                                                   ng-model="z.status"
+                                                   ng-true-value="'ENABLED'" ng-false-value="'DISABLED'"
+                                                   ng-disabled="alarmIsActive"
+                                                   ng-change="changeZoneStatus(z)">
+                                            <i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </perfect-scrollbar>
                     </div>
                 </div>
 
@@ -100,28 +105,31 @@
                     <div class="bg-light lter b-b wrapper-md ng-scope">
                         <h1 class="m-n font-thin h3">Sensors</h1>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped b-t b-b">
-                            <thead>
-                            <tr>
-                                <th style="width:20%">Status</th>
-                                <th style="width:50%">Name</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="sStatus in sensorsStatus">
-                                <td>
-                                    <div class="doony-circle doony-circle-failure"
-                                         ng-show="sStatus.status=='OPEN'"></div>
-                                    <div class="doony-circle doony-circle-success"
-                                         ng-show="sStatus.status=='CLOSED'"></div>
-                                </td>
-                                <td>{{sStatus.sensorName}}</td>
+                    <perfect-scrollbar class="dashboardScroller">
+                        <div class="table-responsive">
 
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            <table class="table table-striped b-t b-b">
+                                <thead>
+                                <tr>
+                                    <th style="width:20%">Status</th>
+                                    <th style="width:50%">Name</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="sStatus in sensorsStatus">
+                                    <td>
+                                        <div class="doony-circle doony-circle-failure"
+                                             ng-show="sStatus.status=='1'"></div>
+                                        <div class="doony-circle doony-circle-success"
+                                             ng-show="sStatus.status=='0'"></div>
+                                    </td>
+                                    <td>{{sStatus.sensorName}}</td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </perfect-scrollbar>
                 </div>
 
                 <!-- timeline -->
@@ -129,46 +137,51 @@
                     <div class="bg-light lter b-b wrapper-md ng-scope">
                         <h1 class="m-n font-thin h3">Latest Events</h1>
                     </div>
-                    <div class="hbox hbox-auto-xs hbox-auto-sm">
-                        <div class="col">
-                            <div class="wrapper">
-                                <ul class="timeline">
+                    <perfect-scrollbar class="dashboardScroller">
+                        <div class="hbox hbox-auto-xs hbox-auto-sm">
+                            <div class="col">
+                                <div class="wrapper">
+                                    <ul class="timeline">
 
-                                    <li class="tl-item" ng-repeat="timelineEvent in timelineEvents | orderBy:'-[0]'"
-                                        ng-switch="timelineEvent[2]">
+                                        <li class="tl-item" ng-repeat="timelineEvent in timelineEvents | orderBy:'-[0]'"
+                                            ng-switch="timelineEvent[2]">
 
-                                        <!-- Green background -->
-                                        <div class="tl-wrap b-success" ng-switch-default>
-                                            <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
+                                            <!-- Green background -->
+                                            <div class="tl-wrap b-success" ng-switch-default>
+                                                <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
 
-                                            <div class="tl-content panel bg-success padder">
-                                                <span class="arrow arrow-success left pull-up hidden-left"></span>
-                                                <span class="arrow arrow-success right pull-up visible-left"></span>
+                                                <div class="tl-content panel bg-success padder">
+                                                    <span class="arrow arrow-success left pull-up hidden-left"></span>
+                                                    <span class="arrow arrow-success right pull-up visible-left"></span>
 
-                                                <div class="tl-content">
-                                                    {{timelineEvent[1]}}
+                                                    <div class="tl-content">
+                                                        {{timelineEvent[1]}}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <!-- Red background-->
-                                        <div class="tl-wrap b-danger" ng-switch-when="updatedAlarmStatus">
-                                            <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
+                                            <!-- Red background-->
+                                            <div class="tl-wrap b-danger" ng-switch-when="updatedAlarmStatus">
+                                                <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
 
-                                            <div class="tl-content panel bg-danger padder">
-                                                <span class="arrow arrow-danger left pull-up hidden-left"></span>
-                                                <span class="arrow arrow-danger right pull-up visible-left"></span>
+                                                <div class="tl-content panel bg-danger padder">
+                                                    <span class="arrow arrow-danger left pull-up hidden-left"></span>
+                                                    <span class="arrow arrow-danger right pull-up visible-left"></span>
 
-                                                <div class="tl-content">
-                                                    {{timelineEvent[1]}}
+                                                    <div class="tl-content">
+                                                        {{timelineEvent[1]}}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
                             </div>
+
                         </div>
-                    </div>
+                    </perfect-scrollbar>
                 </div>
                 <!-- / timeline -->
 

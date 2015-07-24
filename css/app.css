@@ -5519,9 +5519,15 @@ table .cr {
     min-width: 30px;
 }
 
-.scroller {
-    white-space: pre-line;
-    height: 500px;
+.dashboardScroller {
+    height: 225px;
     overflow-y: hidden;
     position: relative;
+}
+
+.col-centered{
+    float: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

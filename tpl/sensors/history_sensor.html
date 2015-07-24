@@ -30,8 +30,10 @@
                     <td>{{ ses.sensorLocation }}</td>
                     <td>{{ ses.dateOfEvent | date:'medium'}}</td>
                     <td>
-                        <span ng-show="ses.status=='OPEN'" class="label bg-danger">Open</span>
-                        <span ng-show="ses.status=='CLOSED'" class="label bg-success">Closed</span>
+                        <span ng-show="ses.status=='open'" class="label bg-danger">Open</span>
+                        <span ng-show="ses.status=='closed'" class="label bg-success">Closed</span>
+                        <span ng-show="ses.status=='motion detected'" class="label bg-danger">Motion detected</span>
+                        <span ng-show="ses.status=='motion stopped'" class="label bg-success">Motion stopped</span>
                     </td>
                     <td ng-switch="{{ses.batteryLevel}}">
                         <div class="progress-striped active m-b-sm progress ng-isolate-scope" animate="false" value="dynamic" type="success"
@@ -42,7 +44,7 @@
                                  'progress-bar progress-bar-danger': ses.batteryLevel<=10}"
                                  role="progressbar" aria-valuenow="{{ses.batteryLevel}}" aria-valuemin="-10"
                                  aria-valuemax="100" ng-style="{width: percent + '%'}"
-                                 aria-valuetext="{{ses.batteryLevel}}" ng-transclude
+                                 aria-valuetext="{{ses.batteryLevel}}"
                                  style="width: {{ses.batteryLevel}}%;">
                                 <b class="ng-binding ng-scope">{{ses.batteryLevel}}%</b></div>
                         </div>

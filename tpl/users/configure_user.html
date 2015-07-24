@@ -32,7 +32,6 @@
                 <tr>
                     <th style="width:15%">Name</th>
                     <th style="width:15%">Email</th>
-                    <th style="width:20%">Phones</th>
                     <th style="width:20%">Date Registered</th>
                     <th style="width:15%">Edit</th>
                     <th style="width:10%">isAdmin</th>
@@ -42,14 +41,6 @@
                 <tr ng-repeat="u in users | orderBy:'name'">
                     <td>{{u.name}}</td>
                     <td>{{u.email}}</td>
-                    <td>
-                        <table >
-                            <tr ng-repeat="p in u.phones">
-                                <td><label class="tag-label"> {{p }}</label></td>
-                            </tr>
-
-                        </table>
-                    </td>
                     <td>{{u.dateRegistered | date:'medium'}}</td>
                     <td>
                         <button type="button" class="btn btn-warning"

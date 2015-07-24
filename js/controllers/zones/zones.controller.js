@@ -12,15 +12,6 @@ app.controller('ZonesCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
     $scope.editZone = {};
     $scope.alarmIsActive = false;
 
-    /*$scope.$on('alarmStatusChanged', function(response) {
-        console.log('Koita xokcs');
-        console.log(response);
-    });*/
-    /*$scope.state = socket.state;
-    $scope.$watch('socket', function (newVal, oldVal) {
-        // your code here
-        console.log(newVal);
-    });*/
     //get alarm status
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarm + '?token=' + token)
         .success(function (data) {
@@ -140,7 +131,6 @@ app.controller('ZonesCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
     $scope.$watch('socketEvent', function() {
         if($scope.socketEvent) {
             if ($scope.socketEvent.eventType == "alarmStatusChanged") {
-                console.log($scope.socketEvent);
                 if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;
             }

@@ -373,7 +373,6 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
     $scope.$watch('socketEvent', function () {
         if ($scope.socketEvent) {
             if ($scope.socketEvent.eventType == "alarmStatusChanged") {
-                console.log($scope.socketEvent);
                 if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;
             }

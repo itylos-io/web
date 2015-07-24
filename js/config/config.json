@@ -1,5 +1,5 @@
 {
-  "domain": "localhost",
+  "domain": "192.168.2.100",
   "services": {
     "alarmHistory":"/api/v1/alarm/status/history",
     "login": "/api/v1/users/login",

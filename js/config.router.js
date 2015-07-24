@@ -11,11 +11,7 @@ angular.module('app')
             $rootScope.$stateParams = $stateParams;
             $http.get('./js/config/config.json').success(function (data) {
                 $rootScope.apiEndpoints = data;
-                //get the domain from window.location object (overrides config.json 'domain')
-                $rootScope.apiEndpoints.domain = $location.protocol() + "://" + "5.54.113.250" + ":18081";
-                /*$location.host()   "192.168.1.6"*/
-                console.log('run');
-                console.log($rootScope.apiEndpoints);
+                $rootScope.apiEndpoints.domain = $location.protocol() + "://" + "localhost" + ":8081";
             });
 
             /* check the first time for token */
@@ -23,13 +19,11 @@ angular.module('app')
                 var now = new Date().getTime();
                 var expireTime = $localStorage.authed.expireTime;
                 //console.log(expireTime - now);
-                console.log(expireTime - now - 2300000);
                 if (expireTime - now - 2300000 <= 0) {
                     $localStorage.$reset();
                     $location.path('/access/signin').replace();
                 } else {
-                    //console.log('zitao neo token');
-                    //pare neo tokenData!!!! TODO
+                    //TODO new token?
                 }
             }
 
@@ -39,9 +33,6 @@ angular.module('app')
                 if (angular.isDefined($localStorage.authed)) {
                     var now = new Date().getTime();
                     var expireTime = $localStorage.authed.expireTime;
-                    //console.log(expireTime - now);
-
-                    //console.log(expireTime - now  - 2300000);
                     if (expireTime - now - 2300000 <= 0) {
                         $localStorage.$reset();
                         $location.path('/access/signin').replace();
@@ -52,8 +43,6 @@ angular.module('app')
                         })
                             .success(function (data, status, headers, config) {
                                 $localStorage.authed = data.response.tokenData;
-                                console.log('Update token!!!');
-                                console.log($localStorage.authed);
                             })
                             .error(function (data, status, headers, config) {
                                 $localStorage.$reset();
@@ -63,7 +52,7 @@ angular.module('app')
                 }
             }, 1200000);
 
-            var exampleSocket = new WebSocket("ws://" + "5.54.113.250" + ":19997/events");
+            var exampleSocket = new WebSocket("ws://" + "localhost" + ":9997/events");
             /*$location.host()   192.168.1.6*/
             exampleSocket.onmessage = function (event) {
                 //$state.forceReload();

@@ -12,11 +12,6 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
     $scope.currentUser = $localStorage.email;
     $scope.alarmIsActive = false;
 
-    /*$scope.state = socket.state;
-    $scope.$watch('socket', function (newVal, oldVal) {
-        // your code here
-        console.log(newVal);
-    });*/
     //get alarm status
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarm + '?token=' + token)
         .success(function (data) {
@@ -45,7 +40,6 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
         if ($scope.newUser.isAdmin == null) {
             $scope.newUser.isAdmin = false;
         }
-        $scope.newUser.phones = $scope.newUser.phones.split(',');
         $http({
             method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.users + '?token=' + token,
@@ -85,7 +79,6 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             oid: u.oid,
             name: u.name,
             email: u.email,
-            phones: u.phones,
             webPassword: u.webPassword,
             alarmPassword: u.alarmPassword,
             isAdmin: u.isAdmin
@@ -95,7 +88,6 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
 
     //submit edit user
     $scope.submitEdit = function () {
-        $scope.editUser.phones = $scope.editUser.phones.split(',');
         $http({
             method: 'POST',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.users + '?token=' + token,

@@ -4,7 +4,7 @@
 
 'use strict';
 
-app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($scope, $localStorage, $http) {
+app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalService', function ($scope, $localStorage, $http, ModalService) {
 
     var TIMEOUT_FOR_RED_INDICATOR = 10000;
     var MAX_TIMELINE_EVENTS = 10;
@@ -19,20 +19,22 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
 
     // Use to change indicator next to zone when event happens
     $scope.eventsInZone = {};
-    $scope.timelineEvents = [];
+    $scope.timelineEvents = []; // (dateReceivedEvent, text, eventType, background)
 
     $scope.isAdmin = $localStorage.isAdmin;
+
 
     //websockets tests
     $scope.$watch('socketEvent', function () {
         if ($scope.socketEvent) {
 
-            var event = [new Date(), "", $scope.socketEvent.eventType];
+            var event = [new Date(), "", $scope.socketEvent.eventType, "success"];
 
             if ($scope.socketEvent.eventType == "updatedAlarmStatus") {
                 event[1] = $scope.socketEvent.message.user.name + " changed status to " + $scope.socketEvent.message.currentStatus;
                 $scope.timelineEvents.unshift(event);
                 if ($scope.socketEvent.message.currentStatus == 'DISARMED') $scope.alarmIsActive = false; else $scope.alarmIsActive = true;
+
             } else if ($scope.socketEvent.eventType == "updatedWeatherConditions") {
                 var addedToList = false;
                 for (var i = 0; i < $scope.weatherConditions.length; i++) {
@@ -42,13 +44,15 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
                     }
                 }
                 if (!addedToList)$scope.weatherConditions.push($scope.socketEvent.message);
+
             } else if ($scope.socketEvent.eventType == "systemStats") {
                 $scope.freeDiskPercentage = 100 - $scope.socketEvent.message.freeDiskPercentage;
                 $scope.freeMemoryPercentage = 100 - $scope.socketEvent.message.freeMemoryPercentage;
                 $scope.cpuUsage = $scope.socketEvent.message.cpuUsage;
             } else if ($scope.socketEvent.eventType == "newSensorEvent") {
 
-                event[1] = $scope.socketEvent.message.sensorName + " is now " + $scope.socketEvent.message.status;
+                event[1] = setupSensorEventTimelineMessage($scope.socketEvent.message);
+                if ($scope.socketEvent.message.status == 0) event[3] = "success"; else event[3] = "danger";
                 $scope.timelineEvents.unshift(event);
 
                 // Update corresponding sensor status
@@ -88,10 +92,10 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
     // get 5 latest sensors events
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.getSensorEvents + '?limit=5&token=' + token)
         .success(function (data) {
-            console.log(data)
             for (var i = 0; i < data.response.sensorsStatus.length; i++) {
                 var event = [new Date(data.response.sensorsStatus[i].dateOfEvent), "", "newSensorEvent"];
-                event[1] = data.response.sensorsStatus[i].sensorName + " is now " + data.response.sensorsStatus[i].status;
+                event[1] = setupSensorEventTimelineMessage(data.response.sensorsStatus[i]);
+                if (data.response.sensorsStatus[i].status == 0) event[3] = "success"; else event[3] = "danger";
                 $scope.timelineEvents.push(event);
             }
         });
@@ -99,10 +103,10 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
     // get 5 latest alarm status updates
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarmHistory + '?limit=5&token=' + token)
         .success(function (data) {
-            console.log(data)
             for (var i = 0; i < data.response.alarmStatuses.length; i++) {
                 var event = [new Date(data.response.alarmStatuses[i].timeOfStatusUpdate), "", "updatedAlarmStatus"];
                 event[1] = data.response.alarmStatuses[i].user.name + " changed status to " + data.response.alarmStatuses[i].status;
+                event[3] = "success"
                 $scope.timelineEvents.push(event);
             }
         });
@@ -146,17 +150,39 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
             else $scope.alarmIsActive = true;
         });
 
-    $scope.changeAlarmStatus = function (z) {
-        var data = {};
-        if (z == true) {
-            data = {
-                status: 'DISARMED'
-            };
-        } else {
-            data = {
-                status: "ARMED"
-            };
+    $scope.$watch('socketEvent', function () {
+        if ($scope.socketEvent) {
+            if ($scope.socketEvent.eventType == "alarmStatusChanged") {
+                console.log($scope.socketEvent);
+                if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
+                else $scope.alarmIsActive = true;
+            }
         }
+    });
+
+    //=========================================//
+    //================ Methods ================//
+    //=========================================//
+
+    // Show keyboard
+    $scope.launchDisarmKeyboard = function () {
+        ModalService.showModal({
+            templateUrl: "tpl/dashboard/disarm_system_dialog.html",
+            controller: "ComplexController"
+        }).then(function (modal) {
+            modal.element.modal();
+            modal.close.then(function (result) {
+                $scope.complexResult = "Name: " + result.name + ", age: " + result.age;
+            });
+        });
+    };
+
+    // Change alarm status
+    $scope.armSystem = function () {
+        var data = {
+            status: "ARMED"
+        };
+
         $http({
             method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarm + '?token=' + token,
@@ -168,15 +194,21 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', function ($
         });
     };
 
-    $scope.$watch('socketEvent', function () {
-        if ($scope.socketEvent) {
-            if ($scope.socketEvent.eventType == "alarmStatusChanged") {
-                console.log($scope.socketEvent);
-                if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
-                else $scope.alarmIsActive = true;
-            }
+
+    // Based on sensor event setup the appropriate timeline message. hardcoded values here :(
+    function setupSensorEventTimelineMessage(receivedEvent) {
+        var message = "";
+        if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 1 || receivedEvent.sensorTypeId == 2)) { // door sensor and OPEN
+            message = receivedEvent.sensorName + " is now open";
+        } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 1 || receivedEvent.sensorTypeId == 2)) { // door sensor and CLOSED
+            message = receivedEvent.sensorName + " is now closed";
+        } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and OPEN
+            message = "Motion detected in " + receivedEvent.sensorName;
+        } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and CLOSED
+            message = "Motion stopped in " + receivedEvent.sensorName;
         }
-    });
+        return message;
+    }
 
 
     //change zone status
