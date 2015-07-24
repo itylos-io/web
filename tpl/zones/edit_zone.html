@@ -1,0 +1,44 @@
+<style>
+    .red{
+        color:#ff0000;
+    }
+</style>
+
+<form name="form" class="form-validation" ng-submit="submitEdit()">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-11">
+                    <p class="text-muted">Please fill the information to continue</p>
+                </div>
+                <div class="col-xs-1">
+                    <i class="icon-close" ng-click="cancelEdit()"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Zone Name <!--<em class="text-muted" ng-class="{red: error}">(Zones must have different names)</em>--></label>
+                <input type="text" class="form-control" ng-model="editZone.name" required>
+            </div>
+            <div class="form-group">
+                <label>Zone Description</label>
+                <input type="text" class="form-control" ng-model="editZone.description" required>
+            </div>
+            <div class="form-group">
+                <label>Sensors</label>
+                <ui-select reset-search-input="true" multiple ng-model="editZone.sensorOIds" class="form-control" theme="bootstrap" ng-disabled="disabled" ui-select-required>
+                    <ui-select-match placeholder="Select sensors...">{{$item.name}} ({{$item.sensorId}})</ui-select-match>
+                    <ui-select-choices repeat="s.oid as s in sensors | propsFilter: {name: $select.search}">
+                        <div ng-bind-html="s.name | highlight: $select.search"></div>
+                        <small>
+                            sensorId: {{s.sensorId}}<br>
+                            description: <span ng-bind-html="''+s.description | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class=" panel-footer text-right bg-light lter">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid">Submit</button>
+        </div>
+    </div>
+</form>

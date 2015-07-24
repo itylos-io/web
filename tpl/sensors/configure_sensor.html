@@ -1,0 +1,87 @@
+<div class="wrapper-md" ng-controller="SensorsCnfgCtrl">
+    <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+         role="alert" type="danger" ng-show="alarmIsActive">
+        <div>
+            <span class="ng-binding ng-scope">System is armed so you can't edit these data.</span>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading ">
+            <div class="row">
+                <div class="col-lg-12">
+                    Sensors management
+                    <span>
+                      <script type="text/ng-template" id="myModalContent.html">
+                          <div ng-include="'tpl/sensors/add_sensor.html'"></div>
+                      </script>
+                      <button ng-disabled="alarmIsActive" ng-click="open('md')" style="float: right;"
+                              class="btn m-b-xs btn-sm btn-success btn-addon"><i class="fa fa-plus"></i>Add Sensor
+                      </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body b-b b-light">
+            Search: <input id="filter" type="text" class="form-control input-sm w-sm inline m-r"/>
+        </div>
+        <div class="table-responsive">
+            <table class="table m-b-none" ui-jq="footable" data-filter="#filter" data-page-size="10">
+                <thead>
+
+                <tr>
+                    <th style="width:5%">Id</th>
+                    <th style="width:10%">Name</th>
+                    <th style="width:10%">Description</th>
+                    <th style="width:8%">Location</th>
+                    <th style="width:8%">Zones</th>
+                    <th style="width:10%">Type Name</th>
+                    <th style="width:14%">Date Registered</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:5%">Active</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="ses in sensors | orderBy:'sensorId'">
+                    <td>{{ ses.sensorId }}</td>
+                    <td>{{ ses.name }}</td>
+                    <td>{{ ses.description }}</td>
+                    <td>{{ ses.location }}</td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="zone in ses.zones">
+                                <td><label class="tag-label"> {{ zone.name }}</label></td>
+                            </tr>
+                        </table>
+
+                    </td>
+                    <td>{{ ses.sensorTypeName }}</td>
+                    <td>{{ ses.dateRegistered | date:'medium'}}</td>
+                    <td>
+                        <button type="button" ng-click="editSensor('md',ses)" ng-disabled="alarmIsActive"
+                                class="btn btn-warning"><i class="fa fa-edit"></i></button>
+                        <button type="button" ng-click="deleteSensor(ses.oid)" ng-disabled="alarmIsActive"
+                                class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                    </td>
+
+                    <td>
+                        <label class="i-switch bg-info m-t-xs m-r">
+                            <input type="checkbox" ng-disabled="alarmIsActive" ng-checked="ses.isActive"
+                                   ng-click="changeSensorState(ses)">
+                            <!--<input type="checkbox" ng-checked="ses.isActive" ng-click="changeSensorState(ses,!ses.isActive)">-->
+                            <i></i>
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot class="hide-if-no-paging">
+                <tr>
+                    <td colspan="10" class="text-center">
+                        <ul class="pagination"></ul>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>

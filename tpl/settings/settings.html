@@ -1,0 +1,543 @@
+<div class="wrapper-md" ng-controller="SettingsCtrl">
+
+    <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+         role="alert" type="danger" ng-show="alarmIsActive">
+        <div>
+            <span class="ng-binding ng-scope">System is armed so you can't edit these data.</span>
+        </div>
+    </div>
+
+
+    <!-- system settings settings -->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">System Settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"> Enable server sounds for new sensor events:</label>
+
+                        <div class="col-sm-2">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.systemSettings.playSoundsForSensorEvents">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Enable server sounds for updates in alarm
+                            status:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.systemSettings.playSoundsForAlarmStatusUpdates">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Enable server sounds when alarm is triggered:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.systemSettings.playSoundsForTriggeredAlarm">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Itylos access token:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.systemSettings.accessToken"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.systemSettings.accessToken}}</a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                Delay before arming
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" max="120" min="1"
+                                           ng-model="settings.systemSettings.delayToArm" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                Max password retries
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" max="120" min="1"
+                                           ng-model="settings.systemSettings.maxAlarmPasswordRetries" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                Max seconds to disarm
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" max="120" min="1"
+                                           ng-model="settings.systemSettings.maxSecondsToDisarm" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="panel-footer text-right bg-light lter">
+                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateSystemSettings()">Save
+                </button>
+            </footer>
+        </div>
+
+        <!-- email settings -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Email Settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-4 control-label"> Enable email notifications:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.emailSettings.isEnabled">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp User:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.emailSettings.smtpUser"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.emailSettings.smtpUser}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp Password:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.emailSettings.smtpPassword"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.emailSettings.smtpPassword}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp Host:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.emailSettings.smtpHost"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.emailSettings.smtpHost}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp Port:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.emailSettings.smtpPort"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.emailSettings.smtpPort}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp Auth:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-checkbox="settings.emailSettings.smtpAuth" e-title="Smtp Auth Enabled?"
+                                   class="ng-scope ng-binding editable editable-click">
+                                    {{settings.emailSettings.smtpAuth}}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Smtp StartTLSEnabled:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-checkbox="settings.emailSettings.smtpStartTLSEnabled"
+                                   e-title="Smtp StartTLS Enabled?"
+                                   class="ng-scope ng-binding editable editable-click">
+                                    {{settings.emailSettings.smtpStartTLSEnabled}}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Emails to notify:</label>
+
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="email in  settings.emailSettings.emailsToNotify track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <a editable-text="settings.emailSettings.emailsToNotify[$index]"
+                                               class="ng-scope ng-binding editable editable-click">
+                                                {{settings.emailSettings.emailsToNotify[$index]}}
+                                            </a>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete email {{settings.emailSettings.emailsToNotify[$index]}}"
+                                                    ng-click="removeMail($index)" ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addNewEmailToSettings()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="panel-footer text-right bg-light lter">
+                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateEmailSettings()">Save
+                </button>
+            </footer>
+        </div>
+    </div>
+
+
+    <!-- webhook settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Webhooks settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-4 control-label"> Enable webhooks:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.webHookSettings.isEnabled" ng-disabled="alarmIsActive">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">URIs to post data to:</label>
+
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="uri in  settings.webHookSettings.uris track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <a editable-text="settings.webHookSettings.uris[$index]"
+                                               class="ng-scope ng-binding editable editable-click">
+                                                {{settings.webHookSettings.uris[$index]}}
+                                            </a>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete uri {{settings.webHookSettings.uris[$index]}}"
+                                                    ng-click="removeUri($index)" ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addNewUriToWebhooks()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="panel-footer text-right bg-light lter">
+                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateWebhooksSettings()">Save
+                </button>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- pushbullet settings -->
+    <div class="col-sm-6">
+        <form name="form-contact" class="form-validation" ng-submit="updatePushbulletSettings()">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <!--<img src="img/pushbullet_logo.png" alt="." style="width: 25px; margin-right: 20px">-->
+                    <span class="h4">Pushbullet Settings</span>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            Enable pushbullet notifications
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.pushBulletSettings.isEnabled">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Pushbullet access token</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input ng-disabled="alarmIsActive" type="text" class="form-control"
+                                       ng-model="settings.pushBulletSettings.accessToken"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                        ng-click="getPusbhbulletDevices()" ng-disabled="alarmIsActive">
+                                    <i class="fa fa-refresh"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- table for devices -->
+                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
+                        <div class="col-sm-12">
+                            <table class="table table-striped b-t b-b">
+                                <thead>
+                                <tr>
+                                    <th style="width:50%">Device Name</th>
+                                    <th style="width:30%">Is enabled</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="device in settings.pushBulletSettings.devices">
+                                    <td>{{device.deviceName}}</td>
+                                    <td>
+                                        <label class="i-switch bg-dark m-t-xs m-r">
+                                            <input type="checkbox" ng-disabled="alarmIsActive"
+                                                   ng-checked="device.isEnabled"
+                                                   ng-model="device.isEnabled">
+                                            <i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <p class="text-muted" ng-show="settings.pushBulletSettings.devices.length>0">Above devices will
+                        be notified for:</p>
+
+                    <!-- configure when to send notifications-->
+                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    New sensor events
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForSensorEvents">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Updates in alarm status
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForAlarmsStatusUpdates">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Triggered alarm
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForAlarms">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer text-right bg-light lter">
+                    <button type="submit" class="btn btn-success" ng-disabled="form.$invalid"
+                            disabled="disabled">Save
+                    </button>
+                </footer>
+            </div>
+        </form>
+    </div>
+
+    <!-- nexmo settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Nexmo SMS Settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-4 control-label"> Enable sms notifications:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.nexmoSettings.isEnabled" ng-disabled="alarmIsActive">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Nexmo key:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.nexmoSettings.nexmoKey"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.nexmoSettings.nexmoKey}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Nexmo secret:</label>
+
+                        <div class="col-sm-6">
+                            <p class="form-control-static">
+                                <a editable-text="settings.nexmoSettings.nexmoSecret"
+                                   class="ng-scope ng-binding editable editable-click">{{settings.nexmoSettings.nexmoSecret}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Mobiles to notify:</label>
+
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="email in  settings.nexmoSettings.mobilesToNotify track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <a editable-text="settings.nexmoSettings.mobilesToNotify[$index]"
+                                               class="ng-scope ng-binding editable editable-click">
+                                                {{settings.nexmoSettings.mobilesToNotify[$index]}}
+                                            </a>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete mobile {{settings.nexmoSettings.mobilesToNotify[$index]}}"
+                                                    ng-click="removeMobileFromNexmoSettings($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addNewMobileToNexmoSettings()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="panel-footer text-right bg-light lter">
+                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateNexmoSettings()">Save
+                </button>
+            </footer>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+</div>

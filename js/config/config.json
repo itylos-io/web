@@ -1,0 +1,31 @@
+{
+  "domain": "localhost",
+  "services": {
+    "alarmHistory":"/api/v1/alarm/status/history",
+    "login": "/api/v1/users/login",
+    "myUser": "/api/v1/users/me",
+    "getSensors": "/api/v1/sensors",
+    "sensorsStatus": "/api/v1/sensors/status",
+    "getSensorTypes": "/api/v1/sensors/types",
+    "createSensor": "/api/v1/sensors",
+    "deleteSensor": "/api/v1/sensors",
+    "zones": "/api/v1/zones",
+    "zoneStatus": "/api/v1/zones/status",
+    "alarm": "/api/v1/alarm/status",
+    "editSensor": "/api/v1/sensors",
+    "deleteSensor": "/api/v1/sensors",
+    "getSensorEvents": "/api/v1/sensors/events",
+    "alarm": "/api/v1/alarm/status",
+    "getSettings": "/api/v1/settings",
+    "updateSettings": "/api/v1/settings",
+    "updateNexmoSettings": "/api/v1/settings/nexmo",
+    "updateToken": "/api/v1/users/token/update",
+    "users": "/api/v1/users",
+    "pushbulletDevices":"/api/v1/settings/pushbullet/devices",
+    "pushbulletSettings":"/api/v1/settings/pushbullet",
+    "emailSettings":"/api/v1/settings/email",
+    "systemSettings":"/api/v1/settings/system",
+    "nexmoSettings":"/api/v1/settings/nexmo",
+    "webhooksSettings":"/api/v1/settings/webhooks"
+  }
+}

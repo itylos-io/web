@@ -1,0 +1,89 @@
+<!-- list -->
+<ul class="nav" ng-controller="DashboardCtrl">
+
+    <!-- Dashboard -->
+    <li ui-sref-active="active">
+        <a ui-sref="app.dashboard">
+            <i class="glyphicon glyphicon-flash icon"></i>
+            <span class="font-bold" translate="aside.nav.DASHBOARD">Dashboard</span>
+        </a>
+    </li>
+
+    <!-- Zones -->
+    <li ng-show="isAdmin" ui-sref-active="active">
+        <a ui-sref="app.zones.conf">
+            <i class="fa  fa-navicon icon "></i>
+            <span class="font-bold" translate="aside.nav.ZONES">Zones</span>
+        </a>
+    </li>
+
+    <!-- Sensors -->
+    <li ng-show="isAdmin">
+        <a href class="auto">
+      <span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+            <i class="glyphicon glyphicon-facetime-video"></i>
+            <span class="font-bold" translate="aside.nav.SENSORS">Sensors</span>
+        </a>
+        <ul class="nav nav-sub dk">
+            <li class="nav-sub-header">
+                <a href>
+                    <span translate="aside.nav.SENSORS">Sensors</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.sensors.conf">
+                    <span>Configure</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.sensors.status">
+                    <span>Status</span>
+                </a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="app.sensors.history">
+                    <span>History</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <!-- Users -->
+    <li ng-show="isAdmin" ui-sref-active="active">
+        <a ui-sref="app.users">
+            <i class="glyphicon glyphicon-user icon"></i>
+            <span class="font-bold" translate="aside.nav.USERS">Users</span>
+        </a>
+    </li>
+    <!-- Settings -->
+    <li ng-show="isAdmin" ui-sref-active="active">
+        <a ui-sref="app.settings">
+            <i class="glyphicon glyphicon-cog icon"></i>
+            <span class="font-bold" translate="aside.nav.SETTINGS">Settings</span>
+        </a>
+    </li>
+
+
+    <div class="wrapper m-t" style="position: fixed; bottom: 0; ">
+
+        <div ng-repeat="sStatus in weatherConditions">
+            <span class="font-bold">{{sStatus.location}}</span>
+
+            <div>
+                <span class="h2 m-l-sm step">{{sStatus.temperature}}</span>{{sStatus.temperatureSymbol}}
+                <span class="h2 m-l-sm step">{{sStatus.humidity}}</span>{{sStatus.humiditySymbol}}
+            </div>
+
+            <div class="progress-xxs m-t-sm dk progress ng-isolate-scope" value="35" type="primary">
+                <div class="progress-bar progress-bar-itylos" ng-class="type &amp;&amp; 'progress-bar-' + type"
+                     role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"
+                     ng-style="{width: percent + '%'}" aria-valuetext="35%" style="width: 100%;"></div>
+            </div>
+
+        </div>
+    </div>
+
+</ul>

@@ -1,0 +1,67 @@
+<div class="wrapper-md" ng-controller="SensorsStatusCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading ">
+            <div class="row">
+                <div class="col-lg-12">
+                    Latest sensors status
+                </div>
+            </div>
+        </div>
+        <div class="panel-body b-b b-light">
+            Search: <input id="filter" type="text" class="form-control input-sm w-sm inline m-r"/>
+        </div>
+
+        <!-- sensors status table -->
+        <div class="table-responsive">
+            <table class="table m-b-none" ui-jq="footable" data-filter="#filter" data-page-size="10">
+                <thead>
+                <tr>
+                    <th style="width:10%">Id</th>
+                    <th style="width:20%">Name</th>
+                    <th style="width:20%">Status</th>
+                    <th style="width:20%">Last status update</th>
+                    <th style="width:20%">Battery level</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="status in sensorsStatus | orderBy:'batteryLevel'">
+                    <td>{{ status.sensorId }}</td>
+                    <td>{{ status.sensorName }}</td>
+                    <td>{{ status.status }}</td>
+                    <td>{{ status.dateOfEvent | date:'medium'}}</td>
+                    <td ng-switch="{{status.batteryLevel}}">
+                        <div class="progress-striped active m-b-sm progress ng-isolate-scope" animate="false" value="dynamic" type="success"
+                             ng-switch-default>
+                            <div ng-class="{
+                                 'progress-bar progress-bar-success': status.batteryLevel>20,
+                                 'progress-bar progress-bar-warning': status.batteryLevel<=20,
+                                 'progress-bar progress-bar-danger': status.batteryLevel<=10}"
+                                 role="progressbar" aria-valuenow="{{status.batteryLevel}}" aria-valuemin="-10"
+                                 aria-valuemax="100" ng-style="{width: percent + '%'}"
+                                 aria-valuetext="{{status.batteryLevel}}" ng-transclude
+                                 style="width: {{status.batteryLevel}}%;">
+                                <b class="ng-binding ng-scope">{{status.batteryLevel}}%</b></div>
+                        </div>
+
+                        <!-- remember that battery level -1 indicates no battery support -->
+                        <div ng-switch-when="-1">
+                            Not battery powered
+                        </div>
+                    </td>
+
+                </tr>
+                </tbody>
+                <tfoot class="hide-if-no-paging">
+                <tr>
+                    <td colspan="10" class="text-center">
+                        <ul class="pagination"></ul>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+
+
+        </div>
+
+    </div>
+</div>
