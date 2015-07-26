@@ -50,8 +50,6 @@
                             </label>
                         </div>
                     </div>
-
-
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Itylos access token:</label>
 
@@ -62,7 +60,6 @@
                             </p>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="row">
@@ -113,7 +110,6 @@
                     </div>
                 </div>
             </div>
-
             <footer class="panel-footer text-right bg-light lter">
                 <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateSystemSettings()">Save
@@ -239,13 +235,82 @@
                     </div>
                 </div>
             </div>
-
             <footer class="panel-footer text-right bg-light lter">
                 <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateEmailSettings()">Save
                 </button>
             </footer>
         </div>
+    </div>
+
+    <!-- kerberos settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Kerberos settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-4 control-label"> Enable kerberos integration:</label>
+
+                        <div class="col-sm-6">
+                            <label class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.kerberosSettings.isEnabled" ng-disabled="alarmIsActive">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Kerberos instances:</label>
+
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="instance in settings.kerberosSettings.instances track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <label>
+                                                {{instance.instanceName}}
+                                            </label>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-warning btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Edit {{settings.kerberosSettings.instances[$index].instanceName}}"
+                                                    ng-click="editKerberosInstance($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button style="margin-left: 5px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete {{settings.kerberosSettings.instances[$index].instanceName}}"
+                                                    ng-click="removeKerberosInstance($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addKerberosInstance()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer text-right bg-light lter">
+                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateKerberosSettings()">Save
+                </button>
+            </footer>
+        </div>
+
     </div>
 
 
@@ -303,7 +368,6 @@
                     </div>
                 </div>
             </div>
-
             <footer class="panel-footer text-right bg-light lter">
                 <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateWebhooksSettings()">Save
@@ -322,7 +386,6 @@
                     <span class="h4">Pushbullet Settings</span>
                 </div>
                 <div class="panel-body">
-
                     <div class="row">
                         <div class="col-sm-6">
                             Enable pushbullet notifications
@@ -359,7 +422,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- table for devices -->
                     <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
                         <div class="col-sm-12">
@@ -386,10 +448,8 @@
                             </table>
                         </div>
                     </div>
-
                     <p class="text-muted" ng-show="settings.pushBulletSettings.devices.length>0">Above devices will
                         be notified for:</p>
-
                     <!-- configure when to send notifications-->
                     <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
                         <div class="col-sm-4">
@@ -460,7 +520,6 @@
             <div class="panel-body">
                 <div class="form-horizontal">
                     <div class="form-group">
-
                         <label class="col-sm-4 control-label"> Enable sms notifications:</label>
 
                         <div class="col-sm-6">
@@ -512,7 +571,6 @@
                                             </button>
                                     </td>
                                 </tr>
-
                                 <tr>
                                     <td>
                                         <button class="btn m-b-xs btn-sm btn-default btn-addon"
@@ -526,7 +584,6 @@
                     </div>
                 </div>
             </div>
-
             <footer class="panel-footer text-right bg-light lter">
                 <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateNexmoSettings()">Save
@@ -534,10 +591,5 @@
             </footer>
         </div>
     </div>
-
-
-
-</div>
-
 
 </div>

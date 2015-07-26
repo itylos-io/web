@@ -8,8 +8,8 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
     $scope.alarmIsActive = false;
     $scope.sensors = [];
 
-    $scope.$watch('socketEvent', function() {
-        if($scope.socketEvent) {
+    $scope.$watch('socketEvent', function () {
+        if ($scope.socketEvent) {
             if ($scope.socketEvent.eventType == "alarmStatusChanged") {
                 if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;

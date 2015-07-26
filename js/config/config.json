@@ -26,6 +26,8 @@
     "emailSettings":"/api/v1/settings/email",
     "systemSettings":"/api/v1/settings/system",
     "nexmoSettings":"/api/v1/settings/nexmo",
-    "webhooksSettings":"/api/v1/settings/webhooks"
+    "webhooksSettings":"/api/v1/settings/webhooks",
+    "kerberosSettings":"/api/v1/settings/kerberos",
+    "kerberosInstanceName":"/api/v1/settings/kerberos/instance_name"
   }
 }

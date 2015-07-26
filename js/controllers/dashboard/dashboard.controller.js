@@ -7,7 +7,7 @@
 app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalService', function ($scope, $localStorage, $http, ModalService) {
 
     var TIMEOUT_FOR_RED_INDICATOR = 10000;
-    var MAX_TIMELINE_EVENTS = 10;
+    var MAX_TIMELINE_EVENTS = 100;
 
     var token = $localStorage.authed.token;
     $scope.zones = [];
@@ -16,25 +16,24 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
     $scope.alarmIsActive = false;
     $scope.sensorsStatus = [];
     $scope.weatherConditions = [];
-
-    // Use to change indicator next to zone when event happens
-    $scope.eventsInZone = {};
+    $scope.eventsInZone = {};  // Use to change indicator next to zone when event happens
     $scope.timelineEvents = []; // (dateReceivedEvent, text, eventType, background)
-
     $scope.isAdmin = $localStorage.isAdmin;
 
 
-    //websockets tests
+    // Watch websocket
     $scope.$watch('socketEvent', function () {
         if ($scope.socketEvent) {
 
             var event = [new Date(), "", $scope.socketEvent.eventType, "success"];
 
+            // When alarm status changes
             if ($scope.socketEvent.eventType == "updatedAlarmStatus") {
                 event[1] = $scope.socketEvent.message.user.name + " changed status to " + $scope.socketEvent.message.currentStatus;
                 $scope.timelineEvents.unshift(event);
                 if ($scope.socketEvent.message.currentStatus == 'DISARMED') $scope.alarmIsActive = false; else $scope.alarmIsActive = true;
 
+                // When new environmental data is received
             } else if ($scope.socketEvent.eventType == "updatedWeatherConditions") {
                 var addedToList = false;
                 for (var i = 0; i < $scope.weatherConditions.length; i++) {
@@ -45,10 +44,13 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
                 }
                 if (!addedToList)$scope.weatherConditions.push($scope.socketEvent.message);
 
+                // When system stats data is received
             } else if ($scope.socketEvent.eventType == "systemStats") {
                 $scope.freeDiskPercentage = 100 - $scope.socketEvent.message.freeDiskPercentage;
                 $scope.freeMemoryPercentage = 100 - $scope.socketEvent.message.freeMemoryPercentage;
                 $scope.cpuUsage = $scope.socketEvent.message.cpuUsage;
+
+                // When new sensor event is received
             } else if ($scope.socketEvent.eventType == "newSensorEvent") {
 
                 event[1] = setupSensorEventTimelineMessage($scope.socketEvent.message);
@@ -82,15 +84,15 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
                 }
             }
 
-            // Ensure timeline events has size < 10
+            // Ensure timeline events has size < MAX_TIMELINE_EVENTS
             if ($scope.timelineEvents.length > MAX_TIMELINE_EVENTS) {
                 $scope.timelineEvents.pop()
             }
         }
     });
 
-    // get 5 latest sensors events
-    $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.getSensorEvents + '?limit=5&token=' + token)
+    // get 20 latest sensors events
+    $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.getSensorEvents + '?limit=20&token=' + token)
         .success(function (data) {
             for (var i = 0; i < data.response.sensorsStatus.length; i++) {
                 var event = [new Date(data.response.sensorsStatus[i].dateOfEvent), "", "newSensorEvent"];
@@ -100,13 +102,14 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
             }
         });
 
-    // get 5 latest alarm status updates
-    $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarmHistory + '?limit=5&token=' + token)
+    // get 20 latest alarm status updates
+    $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarmHistory + '?limit=20&token=' + token)
         .success(function (data) {
             for (var i = 0; i < data.response.alarmStatuses.length; i++) {
                 var event = [new Date(data.response.alarmStatuses[i].timeOfStatusUpdate), "", "updatedAlarmStatus"];
                 event[1] = data.response.alarmStatuses[i].user.name + " changed status to " + data.response.alarmStatuses[i].status;
                 event[3] = "success"
+                if (data.response.alarmStatuses[i].status == "ARMED") event[3] = "success"; else event[3] = "danger";
                 $scope.timelineEvents.push(event);
             }
         });
@@ -194,7 +197,6 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
         });
     };
 
-
     // Based on sensor event setup the appropriate timeline message. hardcoded values here :(
     function setupSensorEventTimelineMessage(receivedEvent) {
         var message = "";
@@ -210,8 +212,7 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
         return message;
     }
 
-
-    //change zone status
+    // Change zone status
     $scope.changeZoneStatus = function (z) {
         $http({
             method: 'POST',
@@ -219,18 +220,16 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
             data: JSON.stringify({zoneId: z.oid, status: z.status}),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data, status, headers, config) {
-                var newStatus = data.response.zonesStatus;
-                if (z.status == "ENABLED")  $scope.zoneOverview.enabled++; else  $scope.zoneOverview.enabled--;
-                for (var i = 0; i < $scope.zones.length; i++)
-                    for (var j = 0; j < newStatus.length; j++)
-                        if ($scope.zones[i].oid == newStatus[i].zoneId)
-                            $scope.zones[i].status = newStatus[i].status;
-            })
-            .error(function (data, status, headers, config) {
-                (z.status == "DISABLED") ? z.status = "ENABLED" : z.status = "DISABLED";
-            });
+        }).success(function (data, status, headers, config) {
+            var newStatus = data.response.zonesStatus;
+            if (z.status == "ENABLED")  $scope.zoneOverview.enabled++; else  $scope.zoneOverview.enabled--;
+            for (var i = 0; i < $scope.zones.length; i++)
+                for (var j = 0; j < newStatus.length; j++)
+                    if ($scope.zones[i].oid == newStatus[i].zoneId)
+                        $scope.zones[i].status = newStatus[i].status;
+        }).error(function (data, status, headers, config) {
+            (z.status == "DISABLED") ? z.status = "ENABLED" : z.status = "DISABLED";
+        });
     };
 
 }]);

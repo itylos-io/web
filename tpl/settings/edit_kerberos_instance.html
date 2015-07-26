@@ -1,0 +1,29 @@
+<form name="form" class="form-validation" ng-submit="submitEditedKerberosInstance()">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-11">
+                    <p class="text-muted">Please fill your kerberos credentials</p>
+                </div>
+                <div class="col-xs-1">
+                    <i class="icon-close" ng-click="cancel('lg')"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Kerberos IP </label>
+                <input type="text" class="form-control" ng-model="editKerberosInstance.ip" required>
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" ng-model="editKerberosInstance.username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" ng-model="editKerberosInstance.password" required>
+            </div>
+        </div>
+        <div class=" panel-footer text-right bg-light lter">
+            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid">Submit</button>
+        </div>
+    </div>
+</form>

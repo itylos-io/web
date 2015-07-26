@@ -2,16 +2,29 @@
     <div class="modal-dialog modal-lg" style="width: 300px">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close" ng-click="close()" data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Enter Password to Disarm</h4>
             </div>
             <div class="modal-body">
-                <div class="row" >
-                <input type="password" class="col-lg-4 col-centered" ng-model="password" autoFocus >
+                <div class="row" ng-show="errorPasswordEntered">
+
+                    <div class="alert ng-isolate-scope alert-danger alert-dismissable col-lg-8 col-centered"
+                         role="alert" type="danger" ng-show="errorPasswordEntered">
+                        <div>
+                            <span class="ng-binding ng-scope">False password entered...</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <input type="password" class="col-lg-4 col-centered" ng-model="password" autoFocus>
                 </div>
             </div>
             <div class="modal-footer" style="text-align: center">
-                <button type="button" class="btn btn-danger" ng-click="disarmSystem()"  data-dismiss="modal">DISARM</button>
+                <button type="button" class="btn btn-danger" ng-click="disarmSystem()">DISARM
+                </button>
             </div>
         </div>
     </div>

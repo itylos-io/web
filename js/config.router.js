@@ -11,7 +11,7 @@ angular.module('app')
             $rootScope.$stateParams = $stateParams;
             $http.get('./js/config/config.json').success(function (data) {
                 $rootScope.apiEndpoints = data;
-                $rootScope.apiEndpoints.domain = $location.protocol() + "://" + "localhost" + ":8081";
+                $rootScope.apiEndpoints.domain = $location.protocol() + "://" +  "localhost" + ":8081";
             });
 
             /* check the first time for token */

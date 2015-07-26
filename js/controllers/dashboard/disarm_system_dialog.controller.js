@@ -4,6 +4,8 @@ app.controller('ComplexController', [
 
         var token = $localStorage.authed.token;
 
+        $scope.errorPasswordEntered = false;
+
         $scope.password = null;
 
         $scope.close = function () {
@@ -35,6 +37,10 @@ app.controller('ComplexController', [
                 headers: {
                     'Content-Type': 'application/json'
                 }
+            }).success(function (data, status, headers, config) {
+                $element.modal('hide');
+            }).error(function (data, status, headers, config) {
+                $scope.errorPasswordEntered = true;
             });
         };
 
