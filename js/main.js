@@ -70,9 +70,6 @@ angular.module('app')
             $scope.lang.isopen = !$scope.lang.isopen;
         };
 
-
-
-
         function isSmartDevice($window) {
             // Adapted from http://www.detectmobilebrowsers.com
             var ua = $window['navigator']['userAgent'] || $window['navigator']['vendor'] || $window['opera'];

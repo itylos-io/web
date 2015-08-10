@@ -24,9 +24,9 @@ app.controller('SensorsStatusCtrl', ['$scope', '$http', '$state', '$localStorage
             message = "open";
         } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 1 || receivedEvent.sensorTypeId == 2)) { // door sensor and CLOSED
             message = "closed";
-        } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and OPEN
+        } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4 || receivedEvent.sensorTypeId == 5 )) { // motion sensor and OPEN
             message = "motion detected";
-        } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and CLOSED
+        } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4 ||  receivedEvent.sensorTypeId == 5)) { // motion sensor and CLOSED
             message = "motion stopped";
         }
         return message;

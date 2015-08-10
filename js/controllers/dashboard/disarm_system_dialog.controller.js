@@ -5,9 +5,7 @@ app.controller('ComplexController', [
         var token = $localStorage.authed.token;
 
         $scope.errorPasswordEntered = false;
-
         $scope.password = null;
-
         $scope.close = function () {
             close({
                 password: $scope.password

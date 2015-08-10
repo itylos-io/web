@@ -23,6 +23,7 @@
     "TRIGGERS" : "Triggers",
     "USERS" : "Users",
     "SETTINGS" : "Settings",
+        "STATISTICS" : "Statistics",
     "EMAIL" : "Email",
     "WIDGETS" : "Widgets",
     "components" : {

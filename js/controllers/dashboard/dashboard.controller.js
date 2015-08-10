@@ -4,10 +4,11 @@
 
 'use strict';
 
-app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalService', function ($scope, $localStorage, $http, ModalService) {
+app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalService', 'ngAudio', function ($scope, $localStorage, $http, ModalService, ngAudio) {
 
     var TIMEOUT_FOR_RED_INDICATOR = 10000;
     var MAX_TIMELINE_EVENTS = 100;
+    var KERBEROS_SENSOR_TYPE_ID = "5";
 
     var token = $localStorage.authed.token;
     $scope.zones = [];
@@ -17,20 +18,27 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
     $scope.sensorsStatus = [];
     $scope.weatherConditions = [];
     $scope.eventsInZone = {};  // Use to change indicator next to zone when event happens
-    $scope.timelineEvents = []; // (dateReceivedEvent, text, eventType, background)
+    $scope.timelineEvents = []; // (dateReceivedEvent, message, eventType, background)
     $scope.isAdmin = $localStorage.isAdmin;
 
 
     // Watch websocket
-    $scope.$watch('socketEvent', function () {
-        if ($scope.socketEvent) {
+    $scope.$watch('socketEvent', function (newVal, oldVal) {
 
+        if ($scope.socketEvent && !angular.equals(newVal, oldVal)) {
             var event = [new Date(), "", $scope.socketEvent.eventType, "success"];
 
             // When alarm status changes
             if ($scope.socketEvent.eventType == "updatedAlarmStatus") {
-                event[1] = $scope.socketEvent.message.user.name + " changed status to " + $scope.socketEvent.message.currentStatus;
-                $scope.timelineEvents.unshift(event);
+
+
+                var updatedAlarmStatusEvent = {};
+                updatedAlarmStatusEvent.type = "updatedAlarmStatus";
+                updatedAlarmStatusEvent.date = new Date();
+                updatedAlarmStatusEvent.message = $scope.socketEvent.message.user.name + " changed status to " + $scope.socketEvent.message.currentStatus;
+                if ($scope.socketEvent.message.currentStatus == "ARMED")   updatedAlarmStatusEvent.background = "success"; else updatedAlarmStatusEvent.background = "danger";
+                updatedAlarmStatusEvent.isKerberosEvent = false;
+                $scope.timelineEvents.unshift(updatedAlarmStatusEvent);
                 if ($scope.socketEvent.message.currentStatus == 'DISARMED') $scope.alarmIsActive = false; else $scope.alarmIsActive = true;
 
                 // When new environmental data is received
@@ -52,10 +60,20 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
 
                 // When new sensor event is received
             } else if ($scope.socketEvent.eventType == "newSensorEvent") {
+                playSounds($scope.socketEvent);
 
-                event[1] = setupSensorEventTimelineMessage($scope.socketEvent.message);
-                if ($scope.socketEvent.message.status == 0) event[3] = "success"; else event[3] = "danger";
-                $scope.timelineEvents.unshift(event);
+                // Setup timeline event
+                var timelineEvent = {};
+                timelineEvent.type = "newSensorEvent";
+                timelineEvent.date = new Date();
+                timelineEvent.message = setupSensorEventTimelineMessage($scope.socketEvent.message);
+                if ($scope.socketEvent.message.status == 0)  timelineEvent.background = "success"; else timelineEvent.background = "danger";
+                // If it's an event from kerberos make images div
+                if ($scope.socketEvent.message.sensorTypeId == KERBEROS_SENSOR_TYPE_ID) {
+                    $scope.socketEvent.message.kerberosEventImages.reverse();
+                    createKerberosImagesDiv(timelineEvent, $scope.socketEvent.message.kerberosEventImages);
+                }
+                $scope.timelineEvents.unshift(timelineEvent);
 
                 // Update corresponding sensor status
                 for (var i = 0; i < $scope.sensorsStatus.length; i++) {
@@ -95,10 +113,16 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.getSensorEvents + '?limit=20&token=' + token)
         .success(function (data) {
             for (var i = 0; i < data.response.sensorsStatus.length; i++) {
-                var event = [new Date(data.response.sensorsStatus[i].dateOfEvent), "", "newSensorEvent"];
-                event[1] = setupSensorEventTimelineMessage(data.response.sensorsStatus[i]);
-                if (data.response.sensorsStatus[i].status == 0) event[3] = "success"; else event[3] = "danger";
-                $scope.timelineEvents.push(event);
+                var timelineEvent = {};
+                timelineEvent.type = "newSensorEvent";
+                timelineEvent.date = new Date(data.response.sensorsStatus[i].dateOfEvent);
+                timelineEvent.message = setupSensorEventTimelineMessage(data.response.sensorsStatus[i]);
+                if (data.response.sensorsStatus[i].status == 0)   timelineEvent.background = "success"; else timelineEvent.background = "danger";
+                // If it's an event from kerberos make images div
+                if (data.response.sensorsStatus[i].sensorTypeId == KERBEROS_SENSOR_TYPE_ID) {
+                    createKerberosImagesDiv(timelineEvent, data.response.sensorsStatus[i].kerberosEventImages);
+                }
+                $scope.timelineEvents.push(timelineEvent);
             }
         });
 
@@ -106,11 +130,13 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarmHistory + '?limit=20&token=' + token)
         .success(function (data) {
             for (var i = 0; i < data.response.alarmStatuses.length; i++) {
-                var event = [new Date(data.response.alarmStatuses[i].timeOfStatusUpdate), "", "updatedAlarmStatus"];
-                event[1] = data.response.alarmStatuses[i].user.name + " changed status to " + data.response.alarmStatuses[i].status;
-                event[3] = "success"
-                if (data.response.alarmStatuses[i].status == "ARMED") event[3] = "success"; else event[3] = "danger";
-                $scope.timelineEvents.push(event);
+                var timelineEvent = {};
+                timelineEvent.type = "updatedAlarmStatus";
+                timelineEvent.date = new Date(data.response.alarmStatuses[i].timeOfStatusUpdate);
+                timelineEvent.message = data.response.alarmStatuses[i].user.name + " changed status to " + data.response.alarmStatuses[i].status;
+                if (data.response.alarmStatuses[i].status == "ARMED")   timelineEvent.background = "success"; else timelineEvent.background = "danger";
+                timelineEvent.isKerberosEvent = false;
+                $scope.timelineEvents.push(timelineEvent);
             }
         });
 
@@ -153,19 +179,32 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
             else $scope.alarmIsActive = true;
         });
 
+    // watch for changes in system's status
     $scope.$watch('socketEvent', function () {
-        if ($scope.socketEvent) {
-            if ($scope.socketEvent.eventType == "alarmStatusChanged") {
-                console.log($scope.socketEvent);
-                if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
-                else $scope.alarmIsActive = true;
-            }
+        if ($scope.socketEvent && $scope.socketEvent.eventType == "alarmStatusChanged") {
+            if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
+            else $scope.alarmIsActive = true;
         }
     });
 
     //=========================================//
     //================ Methods ================//
     //=========================================//
+
+    // Timeline popover requires a div which contains all images. So we have to setup it manually... :(
+    function createKerberosImagesDiv(timelineEvent, kerberosImages) {
+        timelineEvent.kerberosImages = kerberosImages;
+        timelineEvent.isKerberosEvent = true;
+        timelineEvent.kerberosImagesHtml = '<div id=\"kerberos-slideshow\">';
+        timelineEvent.kerberosImagesHtml = timelineEvent.kerberosImagesHtml +
+            '<div><img style="width: 300px; height: 200px;" src="' + timelineEvent.kerberosImages[0] + '"></div>';
+        for (var z = 0; z < timelineEvent.kerberosImages.length; z++) {
+            var imageUrl = timelineEvent.kerberosImages[z];
+            timelineEvent.kerberosImagesHtml = timelineEvent.kerberosImagesHtml +
+                '<div><img style="width: 300px; height: 200px;" src="' + imageUrl + '"></div>';
+        }
+        timelineEvent.kerberosImagesHtml = timelineEvent.kerberosImagesHtml + '</div>';
+    }
 
     // Show keyboard
     $scope.launchDisarmKeyboard = function () {
@@ -208,8 +247,25 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
             message = "Motion detected in " + receivedEvent.sensorName;
         } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and CLOSED
             message = "Motion stopped in " + receivedEvent.sensorName;
+        } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 5)) { // kerberos AND motion detected
+            message = "Motion detected from kerberos in " + receivedEvent.sensorName;
+        } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 5)) { // kerberos AND motion detected
+            message = "Motion stopped  in " + receivedEvent.sensorName;
         }
         return message;
+    }
+
+    // Play sounds depending on received event
+    function playSounds(event) {
+        if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'DISARMED') {
+            ngAudio.play("sounds/system_disarmed.wav");
+        } else if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'ARMED') {
+            ngAudio.play("sounds/system_armed.wav");
+        } else if (event.eventType == "newSensorEvent" && event.message.status == 1) {
+            ngAudio.play("sounds/sensor_event_1.wav");
+        } else if (event.eventType == "newSensorEvent" && event.message.status == 0) {
+            ngAudio.play("sounds/sensor_event_0.wav");
+        }
     }
 
     // Change zone status

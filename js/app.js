@@ -17,5 +17,7 @@ angular.module('app', [
     'pascalprecht.translate',
     'base64',
     'perfect_scrollbar',
-    'angularModalService'
+    'angularModalService',
+    'ngAudio',
+    'chart.js'
 ]);

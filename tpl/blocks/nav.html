@@ -58,6 +58,15 @@
             <span class="font-bold" translate="aside.nav.USERS">Users</span>
         </a>
     </li>
+
+    <!-- Statistics -->
+    <li ng-show="isAdmin" ui-sref-active="active">
+        <a ui-sref="app.statistics">
+            <i class="glyphicon glyphicon-stats icon"></i>
+            <span class="font-bold" translate="aside.nav.STATISTICS">Statistics</span>
+        </a>
+    </li>
+
     <!-- Settings -->
     <li ng-show="isAdmin" ui-sref-active="active">
         <a ui-sref="app.settings">
@@ -77,7 +86,8 @@
                 <span class="h2 m-l-sm step">{{sStatus.humidity}}</span>{{sStatus.humiditySymbol}}
             </div>
 
-            <div ng-show="!app.settings.asideFolded" class="progress-xxs m-t-sm dk progress ng-isolate-scope" value="35" type="primary">
+            <div ng-show="!app.settings.asideFolded" class="progress-xxs m-t-sm dk progress ng-isolate-scope" value="35"
+                 type="primary">
                 <div class="progress-bar progress-bar-itylos" ng-class="type &amp;&amp; 'progress-bar-' + type"
                      role="progressbar" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"
                      ng-style="{width: percent + '%'}" aria-valuetext="35%" style="width: 100%;"></div>

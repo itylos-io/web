@@ -11,7 +11,7 @@ angular.module('app')
             $rootScope.$stateParams = $stateParams;
             $http.get('./js/config/config.json').success(function (data) {
                 $rootScope.apiEndpoints = data;
-                $rootScope.apiEndpoints.domain = $location.protocol() + "://" +  "localhost" + ":8081";
+                $rootScope.apiEndpoints.domain = $location.protocol() + "://" +  "localhost" + ":18081";
             });
 
             /* check the first time for token */
@@ -52,9 +52,8 @@ angular.module('app')
                 }
             }, 1200000);
 
-            var exampleSocket = new WebSocket("ws://" + "localhost" + ":9997/events");
-            /*$location.host()   192.168.1.6*/
-            exampleSocket.onmessage = function (event) {
+            var socket = new WebSocket("ws://" + "localhost" + ":19997/events");
+            socket.onmessage = function (event) {
                 //$state.forceReload();
                 $rootScope.$apply(function () {
                     $rootScope.socketEvent = JSON.parse(event.data);
@@ -176,7 +175,20 @@ angular.module('app')
                     },
                     templateUrl: 'tpl/settings/settings.html'
                 })
-
+                .state('app.statistics', {
+                    url: '/statistics',
+                    resolve: {
+                        deps: ['$ocLazyLoad',
+                            function ($ocLazyLoad) {
+                                return $ocLazyLoad.load('xeditable').then(
+                                    function () {
+                                        return $ocLazyLoad.load('js/controllers/statistics/statistics.js');
+                                    }
+                                );
+                            }]
+                    },
+                    templateUrl: 'tpl/statistics/statistics.html'
+                })
 
                 .state('access', {
                     url: '/access',
@@ -192,7 +204,6 @@ angular.module('app')
                             }]
                     }
                 })
-
         }
     ]
 );

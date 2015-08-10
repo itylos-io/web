@@ -2,14 +2,40 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
     'editableThemes', '$modal',
     function ($scope, $http, $state, $localStorage, $filter, editableOptions, editableThemes, $modal) {
 
+        var WEB_UI_GITHUB_RELEASES= "https://api.github.com/repos/kerberos-io/machinery/releases/latest";
+
         editableThemes.bs3.inputClass = 'input-sm';
         editableThemes.bs3.buttonsClass = 'btn-sm';
         editableOptions.theme = 'bs3';
+
+        // Alert messages in kerberos settings
+        $scope.showItylosIsTryingToCommunicateWithKerberos = false;
+        $scope.showItylosFailedToCommunicateWithKerberos = false;
+        $scope.showItylosSuccessfullyCommunicatedWithKerberos = false;
+        $scope.showItylosSuccessfullyUpdatedKerberosSettings = false;
+        $scope.showItylosFailedToUpdatKerberosSettings = false;
+        $scope.showItylosIsTryingToUpdatKerberosSettings = false;
+
+        // Alert messages in pushbullet settings
+        $scope.showItylosCouldNotRetrievePushbulletDevices = false;
+        $scope.showItylosCouldRetrievePushbulletDevices = false;
+        $scope.showItylosIsRetrievingPushbulletDevices = false;
+
+        // For version statistics
+        $scope.showNotUpToDateAlert = false;
+        $scope.showUpToDateAlert = false;
+        $scope.module = "";
+        $scope.updatedVersion = "";
+        $scope.updatedVersionUrl = "";
+        $scope.checkCoreApiVersionButtonText = 'Check';
+        $scope.checkWebUIVersionButtonText = 'Check';
+        $scope.webUiVersion = "v1.0.3";
 
 
         //get the token from local storage
         var token = $localStorage.authed.token;
         $scope.alarmIsActive = false;
+
 
         //Get alarm status
         $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.alarm + '?token=' + token)
@@ -29,10 +55,73 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             $scope.settings = data.response.settings;
         });
 
+        //Get current version
+        $http({
+            method: 'GET',
+            url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.currentVersion + '?token=' + token,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).success(function (data, status, headers, config) {
+            $scope.currentVersion = data.response;
+        });
+
 
         //=========================================//
         //================ Methods ================//
         //=========================================//
+
+        // Get latest Core API version
+        $scope.getLatestCoreApiRelease = function () {
+            $scope.checkCoreApiVersionButtonText = "Checking...";
+            //Get current version
+            $http({
+                method: 'GET',
+                url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.latestVersion + '?token=' + token,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function (data, status, headers, config) {
+                $scope.checkCoreApiVersionButtonText = "Check";
+                $scope.updatedVersion = data.response.tag_name;
+                $scope.updatedVersionUrl =data.response.html_url;
+                $scope.module = "Core API";
+
+                if (data.response.tag_name != $scope.currentVersion) {
+                    $scope.showNotUpToDateAlert = true;
+                    $scope.showUpToDateAlert = false;
+                }else{
+                    $scope.showNotUpToDateAlert = false;
+                    $scope.showUpToDateAlert = true;
+                }
+            });
+        };
+
+        // Get latest WebUI version
+        $scope.getLatestWebUIRelease = function () {
+            $scope.checkWebUIVersionButtonText = "Checking...";
+            //Get current version
+            $http({
+                method: 'GET',
+                url:WEB_UI_GITHUB_RELEASES,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function (data, status, headers, config) {
+                $scope.checkWebUIVersionButtonText = "Check";
+                $scope.updatedVersion = data.tag_name;
+                $scope.updatedVersionUrl =data.html_url;
+                $scope.module = "Web UI";
+
+                if (data.tag_name != $scope.webUiVersion) {
+                    $scope.showNotUpToDateAlert = true;
+                    $scope.showUpToDateAlert = false;
+                }else{
+                    $scope.showNotUpToDateAlert = false;
+                    $scope.showUpToDateAlert = true;
+                }
+            });
+        };
 
         //Update email settings
         $scope.updateEmailSettings = function () {
@@ -164,6 +253,9 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
 
         // Update kerberos settings only
         $scope.updateKerberosSettings = function () {
+            $scope.closeAllAlerts();
+            $scope.showItylosIsTryingToUpdatKerberosSettings = true;
+
             var data = {
                 isEnabled: $scope.settings.kerberosSettings.isEnabled,
                 instances: $scope.settings.kerberosSettings.instances
@@ -178,13 +270,19 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
                 }
             }).success(function (data, status, headers, config) {
                 $scope.settings = data.response.settings;
+                $scope.showItylosSuccessfullyUpdatedKerberosSettings = true;
+                $scope.showItylosIsTryingToUpdatKerberosSettings = false;
             }).error(function (data, status, headers, config) {
                 $scope.error = true;
+                $scope.showItylosFailedToUpdatKerberosSettings = true;
+                $scope.showItylosIsTryingToUpdatKerberosSettings = false;
             });
         };
 
         // Ask core API for pushbullet devices associated to given access token
         $scope.getPusbhbulletDevices = function () {
+            $scope.closeAllAlerts();
+            $scope.showItylosIsRetrievingPushbulletDevices = true;
             $http({
                 method: 'GET',
                 url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.pushbulletDevices + '/'
@@ -194,12 +292,29 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
                     'Content-Type': 'application/json'
                 }
             }).success(function (data, status, headers, config) {
+                $scope.showItylosCouldRetrievePushbulletDevices = true;
+                $scope.showItylosIsRetrievingPushbulletDevices = false;
                 $scope.settings.pushBulletSettings.devices = data.response.devices;
             }).error(function (data, status, headers, config) {
+                $scope.showItylosCouldNotRetrievePushbulletDevices = true;
+                $scope.showItylosIsRetrievingPushbulletDevices = false;
                 $scope.settings.pushBulletSettings.devices = [];
             });
         };
 
+        $scope.closeAllAlerts = function(){
+            $scope.showItylosIsTryingToCommunicateWithKerberos = false;
+            $scope.showItylosFailedToCommunicateWithKerberos = false;
+            $scope.showItylosSuccessfullyCommunicatedWithKerberos = false;
+            $scope.showItylosSuccessfullyUpdatedKerberosSettings = false;
+            $scope.showItylosFailedToUpdatKerberosSettings = false;
+            $scope.showItylosIsTryingToUpdatKerberosSettings = false;
+
+            // Alert messages in pushbullet settings
+            $scope.showItylosCouldNotRetrievePushbulletDevices = false;
+            $scope.showItylosCouldRetrievePushbulletDevices = false;
+            $scope.showItylosIsRetrievingPushbulletDevices = false;
+        };
 
         //Check Email Input
         $scope.checkMail = function (data) {
@@ -283,7 +398,7 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             modalInstance.result.then(function (newInstance) {
                 $scope.settings.kerberosSettings.instances.push(newInstance);
                 console.log($scope.settings.kerberosSettings.instances.length - 1)
-                updateKerberosInstanceName($scope.settings.kerberosSettings.instances.length - 1);
+                $scope.updateKerberosInstanceName($scope.settings.kerberosSettings.instances.length - 1);
             });
         };
 
@@ -300,12 +415,14 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             });
             modalInstance.result.then(function (updatedInstance) {
                 $scope.settings.kerberosSettings.instances[instanceIndex] = updatedInstance;
-                updateKerberosInstanceName(instanceIndex);
+                $scope.updateKerberosInstanceName(instanceIndex);
             });
         };
 
         //Get instance name
-        updateKerberosInstanceName = function (kerberosInstanceIndex) {
+        $scope.updateKerberosInstanceName = function (kerberosInstanceIndex) {
+            $scope.closeAllAlerts();
+            $scope.showItylosIsTryingToCommunicateWithKerberos = true;
             $http({
                 method: 'GET',
                 url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.kerberosInstanceName
@@ -316,8 +433,12 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
                     'Content-Type': 'application/json'
                 }
             }).success(function (data, status, headers, config) {
+                $scope.showItylosSuccessfullyCommunicatedWithKerberos = true;
+                $scope.showItylosIsTryingToCommunicateWithKerberos = false;
                 $scope.settings.kerberosSettings.instances[kerberosInstanceIndex].instanceName = data.response.instance.instanceName
             }).error(function (data, status, headers, config) {
+                $scope.showItylosFailedToCommunicateWithKerberos = true;
+                $scope.showItylosIsTryingToCommunicateWithKerberos = false;
                 $scope.settings.kerberosSettings.instances[kerberosInstanceIndex].instanceName = "error!"
             });
         };
@@ -343,9 +464,9 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
                 // Default values
                 $scope.addKerberosInstance = {
                     instanceName: "instanceName",
-                    ip: "192.168.2.100",
+                    ip: "192.168.2.6",
                     username: "root",
-                    password: "kerberos"
+                    password: "root"
                 };
 
                 // Close 'add_kerberos_instance' popup

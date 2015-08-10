@@ -26,6 +26,21 @@
 
     <!-- nabar right -->
     <ul class="nav navbar-nav navbar-right">
+        <li >
+
+            <div ng-controller="DashboardCtrl">
+
+                <div class="hidden-xs"  style="float:right; margin-left: 10px;" ng-repeat="sStatus in weatherConditions">
+                    <span style="text-decoration: underline;" ng-show="app.settings.asideFolded">{{sStatus.location}}</span>
+
+                    <div ng-show="app.settings.asideFolded">
+                        <span class="h4">{{sStatus.temperature}}</span>{{sStatus.temperatureSymbol}}
+                        <span class="h4">{{sStatus.humidity}}</span>{{sStatus.humiditySymbol}}
+                    </div>
+                </div>
+            </div>
+
+        </li>
         <li class="hidden-xs">
             <a ui-fullscreen></a>
         </li>

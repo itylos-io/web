@@ -11,7 +11,7 @@
             </div>
             <div class="form-group">
                 <label>Kerberos IP </label>
-                <input type="text" class="form-control" ng-model="addKerberosInstance.ip"  required>
+                <input type="text" class="form-control" ng-model="addKerberosInstance.ip" required>
             </div>
             <div class="form-group">
                 <label>Username</label>
@@ -22,8 +22,11 @@
                 <input type="password" class="form-control" ng-model="addKerberosInstance.password" required>
             </div>
         </div>
-        <div class=" panel-footer text-right bg-light lter">
-            <button type="submit" class="btn btn-success" ng-disabled="form.$invalid">Submit</button>
+        <div class=" panel-footer text-right bg-light lter"
+             tooltip="After you submit your kerberos credentials, Itylos will try to fetch the instance's name. Itylos will also register corresponding webhooks automatically. Notice that your kerberos instances must have different names, otherwise you may notice unexpected behaviour!">
+            <button
+                    type="submit" class="btn btn-success" ng-disabled="form.$invalid">Submit
+            </button>
         </div>
     </div>
 </form>

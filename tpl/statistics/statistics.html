@@ -1,0 +1,55 @@
+<div class="wrapper-md" ng-controller="StatisticsCtrl">
+
+    <div class="row">
+        <div class="center-block" style="width: 250px; margin-bottom: 20px">
+            <div class="btn-group ">
+                <label class="center-block btn btn-success ng-pristine ng-untouched ng-valid" ng-model="radioModel"
+                       btn-radio="'Last hour'" ng-click="setSelectedTimespan('lastHour')" tabindex="0"
+                       aria-invalid="false">Last hour</label>
+
+                <label class="center-block btn btn-success ng-pristine ng-untouched ng-valid active"
+                       ng-model="radioModel" ng-class="{active:true}" ng-click="setSelectedTimespan('lastDay')"
+                       btn-radio="'Last day'" tabindex="0" aria-invalid="false">Last day</label>
+
+                <label class="center-block btn btn-success ng-pristine ng-untouched ng-valid" ng-model="radioModel"
+                       btn-radio="'Last 7 Days'" ng-click="setSelectedTimespan('last7Days')" tabindex="0"
+                       aria-invalid="false">Last 7 days</label>
+            </div>
+        </div>
+    </div>
+
+
+    <!--All sensors stats-->
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading font-bold"><label>Aggregated statistics from all sensors</label></div>
+            <div class="panel-body">
+                <canvas class="chart chart-doughnut" data="aggregatedSensorStatsData" labels="aggregatedSensorStatsLabel"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Specific sensor stats-->
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading font-bold">
+                <label>Statistics for sensor </label>
+
+                <div class="btn-group dropdown">
+                    <button class="btn btn-default btn-xs" data-toggle="dropdown">{{selectedSensor}} <span
+                            class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="sensor in sensors"><a
+                                ng-click="setSelectedSensor(sensor.name)">{{sensor.name}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel-body">
+                <canvas class="chart chart-line" data="specificSensorData" labels="specificSensorLabels"
+                         options="options" click="onClick"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+</div>

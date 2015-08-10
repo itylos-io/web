@@ -7,7 +7,6 @@
         </div>
     </div>
 
-
     <!-- system settings settings -->
     <div class="col-sm-6">
         <div class="panel panel-default">
@@ -65,7 +64,8 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12" tooltip-placement="bottom"
+                                 tooltip="Seconds to ignore events from sensors after arming system">
                                 Delay before arming
                             </div>
                         </div>
@@ -80,7 +80,8 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12" tooltip-placement="bottom"
+                                 tooltip="Max false entered passwords before triggering alarm">
                                 Max password retries
                             </div>
                         </div>
@@ -95,7 +96,8 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12" tooltip-placement="bottom"
+                                 tooltip="Seconds to wait before triggering alarm and system has not been disarmed, after a sensor event">
                                 Max seconds to disarm
                             </div>
                         </div>
@@ -111,7 +113,8 @@
                 </div>
             </div>
             <footer class="panel-footer text-right bg-light lter">
-                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                <button tooltip="Save system settings"
+                        type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateSystemSettings()">Save
                 </button>
             </footer>
@@ -129,7 +132,8 @@
                         <label class="col-sm-4 control-label"> Enable email notifications:</label>
 
                         <div class="col-sm-6">
-                            <label class="i-switch bg-success m-t-xs m-r">
+                            <label tooltip-placement="bottom" tooltip="Send email alerts when alarm is triggered?"
+                                   class="i-switch bg-success m-t-xs m-r">
                                 <input ng-disabled="alarmIsActive" type="checkbox"
                                        ng-model="settings.emailSettings.isEnabled">
                                 <i></i>
@@ -236,283 +240,14 @@
                 </div>
             </div>
             <footer class="panel-footer text-right bg-light lter">
-                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                <button tooltip-placement="bottom" tooltip="Save email settings"
+                        type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
                         ng-click="updateEmailSettings()">Save
                 </button>
             </footer>
         </div>
-    </div>
 
-    <!-- kerberos settings-->
-    <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="h4">Kerberos settings</span>
-            </div>
-            <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group">
-
-                        <label class="col-sm-4 control-label"> Enable kerberos integration:</label>
-
-                        <div class="col-sm-6">
-                            <label class="i-switch bg-success m-t-xs m-r">
-                                <input ng-disabled="alarmIsActive" type="checkbox"
-                                       ng-model="settings.kerberosSettings.isEnabled" ng-disabled="alarmIsActive">
-                                <i></i>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">Kerberos instances:</label>
-
-                        <div class="col-sm-8">
-                            <table>
-                                <tr ng-repeat="instance in settings.kerberosSettings.instances track by $index">
-                                    <td>
-                                        <p class="form-control-static">
-                                            <label>
-                                                {{instance.instanceName}}
-                                            </label>
-                                            <button style="margin-left: 20px" type="button"
-                                                    class="btn btn-warning btn-sm" tooltip-placement="bottom"
-                                                    tooltip="Edit {{settings.kerberosSettings.instances[$index].instanceName}}"
-                                                    ng-click="editKerberosInstance($index)"
-                                                    ng-disabled="alarmIsActive">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button style="margin-left: 5px" type="button"
-                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
-                                                    tooltip="Delete {{settings.kerberosSettings.instances[$index].instanceName}}"
-                                                    ng-click="removeKerberosInstance($index)"
-                                                    ng-disabled="alarmIsActive">
-                                                <i class="fa fa-trash-o"></i>
-                                            </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
-                                                ng-click="addKerberosInstance()"><i
-                                                class="fa fa-plus"></i>Add new
-                                        </button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <footer class="panel-footer text-right bg-light lter">
-                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
-                        ng-click="updateKerberosSettings()">Save
-                </button>
-            </footer>
-        </div>
-
-    </div>
-
-
-    <!-- webhook settings-->
-    <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="h4">Webhooks settings</span>
-            </div>
-            <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group">
-
-                        <label class="col-sm-4 control-label"> Enable webhooks:</label>
-
-                        <div class="col-sm-6">
-                            <label class="i-switch bg-success m-t-xs m-r">
-                                <input ng-disabled="alarmIsActive" type="checkbox"
-                                       ng-model="settings.webHookSettings.isEnabled" ng-disabled="alarmIsActive">
-                                <i></i>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">URIs to post data to:</label>
-
-                        <div class="col-sm-8">
-                            <table>
-                                <tr ng-repeat="uri in  settings.webHookSettings.uris track by $index">
-                                    <td>
-                                        <p class="form-control-static">
-                                            <a editable-text="settings.webHookSettings.uris[$index]"
-                                               class="ng-scope ng-binding editable editable-click">
-                                                {{settings.webHookSettings.uris[$index]}}
-                                            </a>
-                                            <button style="margin-left: 20px" type="button"
-                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
-                                                    tooltip="Delete uri {{settings.webHookSettings.uris[$index]}}"
-                                                    ng-click="removeUri($index)" ng-disabled="alarmIsActive">
-                                                <i class="fa fa-trash-o"></i>
-                                            </button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
-                                                ng-click="addNewUriToWebhooks()"><i
-                                                class="fa fa-plus"></i>Add new
-                                        </button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <footer class="panel-footer text-right bg-light lter">
-                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
-                        ng-click="updateWebhooksSettings()">Save
-                </button>
-            </footer>
-        </div>
-
-    </div>
-
-    <!-- pushbullet settings -->
-    <div class="col-sm-6">
-        <form name="form-contact" class="form-validation" ng-submit="updatePushbulletSettings()">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <!--<img src="img/pushbullet_logo.png" alt="." style="width: 25px; margin-right: 20px">-->
-                    <span class="h4">Pushbullet Settings</span>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            Enable pushbullet notifications
-                        </div>
-                        <div class="col-sm-6">
-                            <label class="i-switch bg-success m-t-xs m-r">
-                                <input ng-disabled="alarmIsActive" type="checkbox"
-                                       ng-model="settings.pushBulletSettings.isEnabled">
-                                <i></i>
-                            </label>
-                        </div>
-                    </div>
-                    <br>
-
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label>Pushbullet access token</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <input ng-disabled="alarmIsActive" type="text" class="form-control"
-                                       ng-model="settings.pushBulletSettings.accessToken"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <button type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
-                                        ng-click="getPusbhbulletDevices()" ng-disabled="alarmIsActive">
-                                    <i class="fa fa-refresh"></i>Refresh
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- table for devices -->
-                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
-                        <div class="col-sm-12">
-                            <table class="table table-striped b-t b-b">
-                                <thead>
-                                <tr>
-                                    <th style="width:50%">Device Name</th>
-                                    <th style="width:30%">Is enabled</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="device in settings.pushBulletSettings.devices">
-                                    <td>{{device.deviceName}}</td>
-                                    <td>
-                                        <label class="i-switch bg-dark m-t-xs m-r">
-                                            <input type="checkbox" ng-disabled="alarmIsActive"
-                                                   ng-checked="device.isEnabled"
-                                                   ng-model="device.isEnabled">
-                                            <i></i>
-                                        </label>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <p class="text-muted" ng-show="settings.pushBulletSettings.devices.length>0">Above devices will
-                        be notified for:</p>
-                    <!-- configure when to send notifications-->
-                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    New sensor events
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="i-switch bg-danger m-t-xs m-r">
-                                        <input ng-disabled="alarmIsActive" type="checkbox"
-                                               ng-model="settings.pushBulletSettings.notifyForSensorEvents">
-                                        <i></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    Updates in alarm status
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="i-switch bg-danger m-t-xs m-r">
-                                        <input ng-disabled="alarmIsActive" type="checkbox"
-                                               ng-model="settings.pushBulletSettings.notifyForAlarmsStatusUpdates">
-                                        <i></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    Triggered alarm
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="i-switch bg-danger m-t-xs m-r">
-                                        <input ng-disabled="alarmIsActive" type="checkbox"
-                                               ng-model="settings.pushBulletSettings.notifyForAlarms">
-                                        <i></i>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <footer class="panel-footer text-right bg-light lter">
-                    <button type="submit" class="btn btn-success" ng-disabled="form.$invalid"
-                            disabled="disabled">Save
-                    </button>
-                </footer>
-            </div>
-        </form>
-    </div>
-
-    <!-- nexmo settings-->
-    <div class="col-sm-6">
+        <!-- nexmo settings-->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class="h4">Nexmo SMS Settings</span>
@@ -523,7 +258,8 @@
                         <label class="col-sm-4 control-label"> Enable sms notifications:</label>
 
                         <div class="col-sm-6">
-                            <label class="i-switch bg-success m-t-xs m-r">
+                            <label tooltip-placement="bottom" tooltip="Send SMS alerts when alarm is triggered?"
+                                   class="i-switch bg-success m-t-xs m-r">
                                 <input ng-disabled="alarmIsActive" type="checkbox"
                                        ng-model="settings.nexmoSettings.isEnabled" ng-disabled="alarmIsActive">
                                 <i></i>
@@ -585,10 +321,435 @@
                 </div>
             </div>
             <footer class="panel-footer text-right bg-light lter">
-                <button type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
-                        ng-click="updateNexmoSettings()">Save
+                <button tooltip-placement="bottom" tooltip="Update nexmo SMS settings" type="submit"
+                        class="btn btn-success" ng-disabled="alarmIsActive" ng-click="updateNexmoSettings()">Save
                 </button>
             </footer>
+        </div>
+
+    </div>
+
+    <!-- kerberos settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Kerberos settings</span>
+            </div>
+            <!-- Failed to communicate with kerberos message -->
+            <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+                 role="alert" type="danger" ng-show="showItylosFailedToCommunicateWithKerberos">
+                <div>
+                    <span class="ng-binding ng-scope">Error occurred while trying to fetch configuration from your
+                        kerberos instances. Probably false ip or false credentials. Refresh page and try again...</span>
+                </div>
+            </div>
+            <!-- Successful communication with kerberos -->
+            <div class="alert ng-isolate-scope alert-success alert-dismissable"
+                 role="alert" type="success" ng-show="showItylosSuccessfullyCommunicatedWithKerberos">
+                <div>
+                    <span class="ng-binding ng-scope">Itylos has successfully established connection with your kerberos
+                        instance! You can save your changes!</span>
+                </div>
+            </div>
+            <!-- Tyring  to communicate with kerberos -->
+            <div class="alert ng-isolate-scope alert-info alert-dismissable"
+                 role="alert" type="info" ng-show="showItylosIsTryingToCommunicateWithKerberos">
+                <div>
+                    <span class="ng-binding ng-scope">Itylos is trying to communicate with your kerberos instance,
+                        please wait...</span>
+                </div>
+            </div>
+            <!-- Failed to update kerberos messages -->
+            <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+                 role="alert" type="danger" ng-show="showItylosFailedToUpdatKerberosSettings">
+                <div>
+                    <span class="ng-binding ng-scope">Error occurred while trying to configure kerberos instances.
+                        Refresh page and try again...</span>
+                </div>
+            </div>
+            <!-- Successfully updated kerberos settings -->
+            <div class="alert ng-isolate-scope alert-success alert-dismissable"
+                 role="alert" type="success" ng-show="showItylosSuccessfullyUpdatedKerberosSettings">
+                <div>
+                    <span class="ng-binding ng-scope">Itylos has successfully updated kerberos settings and
+                        the corresponding kerberos instances!</span>
+                </div>
+            </div>
+            <!-- Tyring  to updated kerberos settings -->
+            <div class="alert ng-isolate-scope alert-info alert-dismissable"
+                 role="alert" type="info" ng-show="showItylosIsTryingToUpdatKerberosSettings">
+                <div>
+                    <span class="ng-binding ng-scope">Itylos is trying to configure kerberos instances. This may take
+                        some seconds. Please wait...</span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"> Enable kerberos integration:</label>
+
+                        <div class="col-sm-6">
+                            <label tooltip-placement="bottom"
+                                   tooltip="Enable/disable kerberos instances when Itylos is armed/disarmed?"
+                                   class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.kerberosSettings.isEnabled" ng-disabled="alarmIsActive">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Kerberos instances:</label>
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="instance in settings.kerberosSettings.instances track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <label>
+                                                {{instance.instanceName}}
+                                            </label>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-warning btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Edit {{settings.kerberosSettings.instances[$index].instanceName}}"
+                                                    ng-click="editKerberosInstance($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button style="margin-left: 5px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete {{settings.kerberosSettings.instances[$index].instanceName}}"
+                                                    ng-click="removeKerberosInstance($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                            <button style="margin-left: 5px" type="button"
+                                                    class="btn btn-sm btn-info" tooltip-placement="bottom"
+                                                    tooltip="Check connection with {{settings.kerberosSettings.instances[$index].instanceName}}"
+                                                    ng-click="updateKerberosInstanceName($index)"
+                                                    ng-disabled="alarmIsActive">
+                                                <i class="fa fa-refresh"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addKerberosInstance()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer text-right bg-light lter">
+                <button tooltip-placement="bottom" tooltip="Save kerberos settings"
+                        type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateKerberosSettings()">Save
+                </button>
+            </footer>
+        </div>
+
+    </div>
+
+
+    <!-- webhook settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Webhooks settings</span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-4 control-label"> Enable webhooks:</label>
+
+                        <div class="col-sm-6">
+                            <label tooltip-placement="bottom" tooltip="POST data to uris through webhooks?"
+                                   class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.webHookSettings.isEnabled" ng-disabled="alarmIsActive">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">URIs to post data to:</label>
+
+                        <div class="col-sm-8">
+                            <table>
+                                <tr ng-repeat="uri in  settings.webHookSettings.uris track by $index">
+                                    <td>
+                                        <p class="form-control-static">
+                                            <a editable-text="settings.webHookSettings.uris[$index]"
+                                               class="ng-scope ng-binding editable editable-click">
+                                                {{settings.webHookSettings.uris[$index]}}
+                                            </a>
+                                            <button style="margin-left: 20px" type="button"
+                                                    class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                    tooltip="Delete uri {{settings.webHookSettings.uris[$index]}}"
+                                                    ng-click="removeUri($index)" ng-disabled="alarmIsActive">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addNewUriToWebhooks()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer text-right bg-light lter">
+                <button tooltip-placement="bottom" tooltip="Save webhook settings"
+                        type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateWebhooksSettings()">Save
+                </button>
+            </footer>
+        </div>
+
+    </div>
+
+    <!-- pushbullet settings -->
+    <div class="col-sm-6">
+        <form name="form-contact" class="form-validation" ng-submit="updatePushbulletSettings()">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <!--<img src="img/pushbullet_logo.png" alt="." style="width: 25px; margin-right: 20px">-->
+                    <span class="h4">Pushbullet Settings</span>
+                </div>
+                <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+                     role="alert" type="danger" ng-show="showItylosCouldNotRetrievePushbulletDevices">
+                    <div>
+                    <span class="ng-binding ng-scope">Error occurred while trying to fetch devices from your
+                        pushbullet. Probably false access token. Refresh page and try again...</span>
+                    </div>
+                </div>
+                <div class="alert ng-isolate-scope alert-success alert-dismissable"
+                     role="alert" type="success" ng-show="showItylosCouldRetrievePushbulletDevices">
+                    <div>
+                    <span class="ng-binding ng-scope">Itylos has successfully retrieved all devices from your
+                        pushbullet account! You can now continue and select the devices you want to receive
+                        notifications on </span>
+                    </div>
+                </div>
+                <div class="alert ng-isolate-scope alert-info alert-dismissable"
+                     role="alert" type="info" ng-show="showItylosIsRetrievingPushbulletDevices">
+                    <div>
+                    <span class="ng-binding ng-scope">Itylos is trying to communicate with your pushbullet account,
+                        please wait...</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            Enable pushbullet notifications:
+                        </div>
+                        <div class="col-sm-6">
+                            <label tooltip-placement="bottom" tooltip="Send notifications via Pushbullet service?"
+                                   class="i-switch bg-success m-t-xs m-r">
+                                <input ng-disabled="alarmIsActive" type="checkbox"
+                                       ng-model="settings.pushBulletSettings.isEnabled">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Pushbullet access token</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <input ng-disabled="alarmIsActive" type="text" class="form-control"
+                                       ng-model="settings.pushBulletSettings.accessToken"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <button tooltip-placement="bottom"
+                                        tooltip="Fetch devices from your pushbullet account"
+                                        type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                        ng-click="getPusbhbulletDevices()"
+                                        ng-disabled="alarmIsActive">
+                                    <i class="fa fa-refresh"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- table for devices -->
+                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
+                        <div class="col-sm-12">
+                            <table class="table table-striped b-t b-b">
+                                <thead>
+                                <tr>
+                                    <th style="width:50%">Device Name</th>
+                                    <th style="width:30%">Is enabled</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="device in settings.pushBulletSettings.devices">
+                                    <td>{{device.deviceName}}</td>
+                                    <td>
+                                        <label class="i-switch bg-dark m-t-xs m-r">
+                                            <input type="checkbox" ng-disabled="alarmIsActive"
+                                                   ng-checked="device.isEnabled"
+                                                   ng-model="device.isEnabled">
+                                            <i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p class="text-muted" ng-show="settings.pushBulletSettings.devices.length>0">Devices below will
+                        be notified for:</p>
+                    <!-- configure when to send notifications-->
+                    <div class="row" ng-show="settings.pushBulletSettings.devices.length>0">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    New sensor events
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForSensorEvents">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Updates in alarm status
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForAlarmsStatusUpdates">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Triggered alarm
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="i-switch bg-danger m-t-xs m-r">
+                                        <input ng-disabled="alarmIsActive" type="checkbox"
+                                               ng-model="settings.pushBulletSettings.notifyForAlarms">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer text-right bg-light lter">
+                    <button tooltip-placement="bottom" tooltip="Update pushbullet settings"
+                            class="btn btn-success" ng-disabled="alarmIsActive" disabled="disabled">Save
+                    </button>
+                </footer>
+            </div>
+        </form>
+    </div>
+
+    <!-- version settings-->
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">System Version</span>
+            </div>
+            <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+                 role="alert" type="danger" ng-show="showNotUpToDateAlert">
+                <div>
+                    <span class="ng-binding ng-scope">An updated version ({{updatedVersion}}) has been published.
+                        Follow <a href="{{updatedVersionUrl}}" target="_blank">this</a> link to update your Itylos ({{module}}) setup.
+                    </span>
+                </div>
+            </div>
+            <div class="alert ng-isolate-scope alert-success alert-dismissable"
+                 role="alert" type="success" ng-show="showUpToDateAlert">
+                <div>
+                    <span class="ng-binding ng-scope">Your Itylos ({{module}}) setup is already updated to the latest version
+                        ({{updatedVersion}}). Congrats!</span>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <label class="col-sm-3 control-label">
+                            Current Core API Version:
+                        </label>
+
+                        <div class="col-sm-2 control-label">
+                            <label>
+                                {{currentVersion.tag_name}}
+                            </label>
+                        </div>
+                        <div class="col-sm-4 control-label">
+                            <button tooltip-placement="bottom"
+                                    tooltip="Check if newer version for Core API has been released"
+                                    data-placement="top" type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                    ng-click="getLatestCoreApiRelease()">
+                                <i class="fa fa-refresh"></i>{{checkCoreApiVersionButtonText}}
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            Current Web UI Version:
+                        </label>
+
+                        <div class="col-sm-2 control-label">
+                            <label>
+                                {{webUiVersion}}
+                            </label>
+                        </div>
+                        <div class="col-sm-4 control-label">
+                            <button tooltip-placement="bottom"
+                                    tooltip="Check if newer version for Web UI has been released"
+                                    type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                    ng-click="getLatestWebUIRelease()">
+                                <i class="fa fa-refresh"></i>{{checkWebUIVersionButtonText}}
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 

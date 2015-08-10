@@ -1,6 +1,6 @@
 {
   "name": "Itylos-io Web Interface",
-  "version": "2.0.1",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Chris Christodoulopoulos",
@@ -9,6 +9,14 @@
       "facebook": "https://www.facebook.com/xristos.xristod",
       "twitter": "@XristosXrist",
       "linkedin": "https://www.linkedin.com/profile/view?id=301553247"
+    },
+    {
+      "name": "Angelos Petheriotis",
+      "email": "apetheriotis@gmail.com",
+      "homepage": "",
+      "facebook": "",
+      "twitter": "@apetheriotis",
+      "linkedin": "https://www.linkedin.com/profile/view?id=126209195"
     }
   ],
   "description": "The Web Interface for the Itylos-io Security System.",
@@ -84,7 +92,6 @@
     "slimscroll": "~1.3.3",
     "simple-line-icons": "~0.1.1",
     "jquery_appear": "~0.3.3",
-    "jquery.easy-pie-chart": "~2.1.6",
     "jquery.sparkline": "~2.1.2",
     "flot": "~0.8.3",
     "flot.tooltip": "~0.8.4",
@@ -93,6 +100,8 @@
     "bootstrap-tagsinput": "~0.4.2",
     "angular-base64": "~2.0.5",
     "angular-perfect-scrollbar": "~0.0.4",
-    "angular-modal-service": "~0.6.6"
+    "angular-modal-service": "~0.6.6",
+    "angular-audio": "~1.7.0",
+    "angular-chart.js": "~0.7.3"
   }
 }

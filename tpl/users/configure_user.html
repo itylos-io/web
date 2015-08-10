@@ -44,7 +44,7 @@
                     <td>{{u.dateRegistered | date:'medium'}}</td>
                     <td>
                         <button type="button" class="btn btn-warning"
-                                tooltip-placement="bottom" tooltip="Edit User"
+                                tooltip-placement="bottom" tooltip="Edit {{u.name}}"
                                 ng-click="editUserOpen(u)" ng-disabled="alarmIsActive">
                             <i class="fa fa-edit" ></i>
                         </button>

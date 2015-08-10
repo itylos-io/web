@@ -57,10 +57,9 @@
                 </div>
             </div>
 
-
             <!-- zones table -->
             <div class="row">
-                <div class="col-xs-4">
+                <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="bg-light lter b-b wrapper-md ng-scope">
                         <h1 class="m-n font-thin h3">Zones</h1>
                     </div>
@@ -101,7 +100,7 @@
                 </div>
 
                 <!-- sensors table -->
-                <div class="col-xs-4">
+                <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="bg-light lter b-b wrapper-md ng-scope">
                         <h1 class="m-n font-thin h3">Sensors</h1>
                     </div>
@@ -132,7 +131,7 @@
                 </div>
 
                 <!-- timeline -->
-                <div class="col-xs-4">
+                <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="bg-light lter b-b wrapper-md ng-scope">
                         <h1 class="m-n font-thin h3">Latest Events</h1>
                     </div>
@@ -143,33 +142,53 @@
                                 <div class="wrapper">
                                     <ul class="timeline">
 
-                                        <li class="tl-item" ng-repeat="timelineEvent in timelineEvents | orderBy:'-[0]'"
-                                            ng-switch="timelineEvent[3]">
+                                        <li class="tl-item"
+                                            ng-repeat="timelineEvent in timelineEvents | orderBy:'-date'"
+                                            ng-switch="timelineEvent.background">
 
                                             <!-- Green background -->
                                             <div class="tl-wrap b-success" ng-switch-default>
-                                                <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
+                                                <span class="tl-date">  {{timelineEvent.date | date:'HH:mm:ss'}} </span>
 
                                                 <div class="tl-content panel bg-success padder">
                                                     <span class="arrow arrow-success left pull-up hidden-left"></span>
                                                     <span class="arrow arrow-success right pull-up visible-left"></span>
 
-                                                    <div class="tl-content">
-                                                        {{timelineEvent[1]}}
+                                                    <!-- Show popup with images if sensor event is a kerberos event-->
+                                                    <div ng-switch="timelineEvent.isKerberosEvent">
+                                                        <div ng-app="customDirectives" ng-switch-when="true">
+                                                             <span custom-popover popover-placement="left"
+                                                                   popover-label={{timelineEvent.message}}
+                                                                   popover-images-html={{timelineEvent.kerberosImagesHtml}}>
+                                                            </span>
+                                                        </div>
+                                                        <div class="tl-content" ng-switch-default>
+                                                            {{timelineEvent.message}}
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             </div>
 
                                             <!-- Red background-->
                                             <div class="tl-wrap b-danger" ng-switch-when="danger">
-                                                <span class="tl-date">  {{timelineEvent[0] | date:'HH:mm:ss'}} </span>
+                                                <span class="tl-date"> {{timelineEvent.date | date:'HH:mm:ss'}} </span>
 
                                                 <div class="tl-content panel bg-danger padder">
                                                     <span class="arrow arrow-danger left pull-up hidden-left"></span>
                                                     <span class="arrow arrow-danger right pull-up visible-left"></span>
 
-                                                    <div class="tl-content">
-                                                        {{timelineEvent[1]}}
+                                                    <!-- Show popup with images if sensor event is a kerberos event-->
+                                                    <div ng-switch="timelineEvent.isKerberosEvent">
+                                                        <div ng-app="customDirectives" ng-switch-when="true">
+                                                             <span custom-popover popover-placement="left"
+                                                                   popover-label={{timelineEvent.message}}
+                                                                   popover-images-html={{timelineEvent.kerberosImagesHtml}}>
+                                                            </span>
+                                                        </div>
+                                                        <div class="tl-content" ng-switch-default>
+                                                            {{timelineEvent.message}}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -188,3 +207,10 @@
     </div>
     <!-- / main -->
 </div>
+
+
+
+
+
+
+

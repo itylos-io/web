@@ -5531,3 +5531,20 @@ table .cr {
     margin-left: auto;
     margin-right: auto;
 }
+
+.popover {
+    max-width: 1500px;
+}
+
+
+#kerberos-slideshow {
+    position: relative;
+    width: 300px;
+    height: 200px;
+}
+
+#kerberos-slideshow > div {
+    position: absolute;
+
+}
+

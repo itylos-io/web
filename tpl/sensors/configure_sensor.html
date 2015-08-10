@@ -58,9 +58,9 @@
                     <td>{{ ses.dateRegistered | date:'medium'}}</td>
                     <td>
                         <button type="button" ng-click="editSensor('md',ses)" ng-disabled="alarmIsActive"
-                                class="btn btn-warning"><i class="fa fa-edit"></i></button>
+                                class="btn btn-warning"  tooltip="Edit {{ ses.name}}"><i class="fa fa-edit"></i></button>
                         <button type="button" ng-click="deleteSensor(ses.oid)" ng-disabled="alarmIsActive"
-                                class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                                class="btn btn-danger"  tooltip="Delete {{ ses.name}}"><i class="fa fa-trash-o"></i></button>
                     </td>
 
                     <td>
