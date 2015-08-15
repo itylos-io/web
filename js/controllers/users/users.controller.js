@@ -46,12 +46,11 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             data: JSON.stringify($scope.newUser),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data, status, headers, config) {
-                $scope.newUser = {};
-                $scope.users = data.response.users;
-                $scope.cancel();
-            });
+        }).success(function (data, status, headers, config) {
+            $scope.newUser = {};
+            $scope.users = data.response.users;
+            $scope.cancel();
+        });
     };
 
     //change user status
@@ -62,10 +61,9 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             data: JSON.stringify(u),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
+        }).success(function (data, status, headers, config) {
+            $scope.users = data.response.users;
         })
-            .success(function (data, status, headers, config) {
-                $scope.users = data.response.users;
-            })
     };
 
     //edit user modal close
@@ -94,12 +92,11 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             data: JSON.stringify($scope.editUser),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
+        }).success(function (data, status, headers, config) {
+            $scope.editUser = {};
+            $scope.users = data.response.users;
+            $scope.cancelEdit();
         })
-            .success(function (data, status, headers, config) {
-                $scope.editUser = {};
-                $scope.users = data.response.users;
-                $scope.cancelEdit();
-            })
             .error(function (data) {
                 $scope.cancelEdit();
             });
@@ -112,16 +109,14 @@ app.controller('UsersCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             data: JSON.stringify({oid: u.oid}),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data) {
-                $scope.users = data.response.users;
-            });
+        }).success(function (data) {
+            $scope.users = data.response.users;
+        });
     };
 
     $scope.$watch('socketEvent', function () {
         if ($scope.socketEvent) {
             if ($scope.socketEvent.eventType == "alarmStatusChanged") {
-
                 if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;
             }

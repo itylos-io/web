@@ -43,38 +43,35 @@ app.controller('ZonesCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
     //submit new zone
     $scope.submit = function () {
         $http({
-            method: 'PUT',
+            method: 'POST',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.zones + '?token=' + token,
             data: JSON.stringify($scope.newZone),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data, status, headers, config) {
-                $scope.newZone = {};
-                $scope.zones = data.response.zones;
-                $scope.cancel();
-            });
+        }).success(function (data, status, headers, config) {
+            $scope.newZone = {};
+            $scope.zones = data.response.zones;
+            $scope.cancel();
+        });
     };
 
     //change zone status
     $scope.changeZoneStatus = function (z) {
         $http({
-            method: 'POST',
+            method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.zoneStatus + '?token=' + token,
             data: JSON.stringify({zoneId: z.oid, status: z.status}),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data, status, headers, config) {
-                var newStatus = data.response.zonesStatus;
-                for (var i = 0; i < $scope.zones.length; i++)
-                    for (var j = 0; j < newStatus.length; j++)
-                        if ($scope.zones[i].oid == newStatus[i].zoneId)
-                            $scope.zones[i].status = newStatus[i].status;
-            })
-            .error(function (data, status, headers, config) {
-                (z.status == "DISABLED") ? z.status = "ENABLED" : z.status = "DISABLED";
-            });
+        }).success(function (data, status, headers, config) {
+            var newStatus = data.response.zonesStatus;
+            for (var i = 0; i < $scope.zones.length; i++)
+                for (var j = 0; j < newStatus.length; j++)
+                    if ($scope.zones[i].oid == newStatus[i].zoneId)
+                        $scope.zones[i].status = newStatus[i].status;
+        }).error(function (data, status, headers, config) {
+            (z.status == "DISABLED") ? z.status = "ENABLED" : z.status = "DISABLED";
+        });
     };
 
     //edit zone modal close
@@ -98,20 +95,18 @@ app.controller('ZonesCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
     //submit edit zone
     $scope.submitEdit = function () {
         $http({
-            method: 'POST',
+            method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.zones + '?token=' + token,
             data: JSON.stringify($scope.editZone),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data, status, headers, config) {
-                $scope.editZone = {};
-                $scope.zones = data.response.zones;
-                $scope.cancelEdit();
-            })
-            .error(function (data) {
-                $scope.cancelEdit();
-            });
+        }).success(function (data, status, headers, config) {
+            $scope.editZone = {};
+            $scope.zones = data.response.zones;
+            $scope.cancelEdit();
+        }).error(function (data) {
+            $scope.cancelEdit();
+        });
     };
 
     //delete zone
@@ -122,14 +117,13 @@ app.controller('ZonesCtrl', ['$scope', '$http', '$localStorage', '$modal', funct
             data: JSON.stringify({oid: z.oid}),
             dataType: 'json',
             headers: {'Content-Type': 'application/json'}
-        })
-            .success(function (data) {
-                $scope.zones = data.response.zones;
-            });
+        }).success(function (data) {
+            $scope.zones = data.response.zones;
+        });
     };
 
-    $scope.$watch('socketEvent', function() {
-        if($scope.socketEvent) {
+    $scope.$watch('socketEvent', function () {
+        if ($scope.socketEvent) {
             if ($scope.socketEvent.eventType == "alarmStatusChanged") {
                 if ($scope.socketEvent.message.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;

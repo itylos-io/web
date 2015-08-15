@@ -8,10 +8,14 @@
     </div>
 
     <!-- system settings settings -->
-    <div class="col-sm-6">
+    <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">System Settings</span>
+                 <span class="h4">
+                    <label tooltip-placement="bottom" tooltip="General system settings.">
+                        System settings
+                    </label>
+                 </span>
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
@@ -123,7 +127,10 @@
         <!-- email settings -->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">Email Settings</span>
+                 <span class="h4">
+                     <label tooltip-placement="bottom" tooltip="Use email integration to get email messages when alarm
+                     is triggered.">Email settings </label>
+                 </span>
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
@@ -250,7 +257,10 @@
         <!-- nexmo settings-->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">Nexmo SMS Settings</span>
+                   <span class="h4">
+                        <label tooltip-placement="bottom" tooltip="Use nexmo sms service integration to get sms messages when alarm
+                         is triggered.">Nexmo SMS settings </label>
+                   </span>
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
@@ -327,13 +337,87 @@
             </footer>
         </div>
 
+
+        <!-- version settings-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="h4">System Version</span>
+                </div>
+                <div class="alert ng-isolate-scope alert-danger alert-dismissable"
+                     role="alert" type="danger" ng-show="showNotUpToDateAlert">
+                    <div>
+                    <span class="ng-binding ng-scope">An updated version ({{updatedVersion}}) has been published.
+                        Follow <a href="{{updatedVersionUrl}}" target="_blank">this</a> link to update your Itylos ({{module}}) setup.
+                    </span>
+                    </div>
+                </div>
+                <div class="alert ng-isolate-scope alert-success alert-dismissable"
+                     role="alert" type="success" ng-show="showUpToDateAlert">
+                    <div>
+                    <span class="ng-binding ng-scope">Your Itylos ({{module}}) setup is already updated to the latest version
+                        ({{updatedVersion}}). Congrats!</span>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+
+                            <label class="col-sm-3 control-label">
+                                Current Core API Version:
+                            </label>
+
+                            <div class="col-sm-2 control-label">
+                                <label>
+                                    {{currentVersion.tag_name}}
+                                </label>
+                            </div>
+                            <div class="col-sm-4 control-label">
+                                <button tooltip-placement="bottom"
+                                        tooltip="Check if newer version for Core API has been released"
+                                        data-placement="top" type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                        ng-click="getLatestCoreApiRelease()">
+                                    <i class="fa fa-refresh"></i>{{checkCoreApiVersionButtonText}}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                                Current Web UI Version:
+                            </label>
+
+                            <div class="col-sm-2 control-label">
+                                <label>
+                                    {{webUiVersion}}
+                                </label>
+                            </div>
+                            <div class="col-sm-4 control-label">
+                                <button tooltip-placement="bottom"
+                                        tooltip="Check if newer version for Web UI has been released"
+                                        type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
+                                        ng-click="getLatestWebUIRelease()">
+                                    <i class="fa fa-refresh"></i>{{checkWebUIVersionButtonText}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     </div>
 
     <!-- kerberos settings-->
-    <div class="col-sm-6">
+    <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">Kerberos settings</span>
+              <span class="h4">
+                      <label tooltip-placement="bottom" tooltip="Configure your kerberos instances to get immediate updates
+                  and images from all your kerberos setups directly to itylos. After you have configured your kerberos
+                  instances, itylos will treat them automatically as sensors.">
+                          Kerberos settings
+                      </label>
+                </span>
             </div>
             <!-- Failed to communicate with kerberos message -->
             <div class="alert ng-isolate-scope alert-danger alert-dismissable"
@@ -401,6 +485,7 @@
 
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Kerberos instances:</label>
+
                         <div class="col-sm-8">
                             <table>
                                 <tr ng-repeat="instance in settings.kerberosSettings.instances track by $index">
@@ -452,20 +537,101 @@
                 </button>
             </footer>
         </div>
+    </div>
+
+
+    <!-- health check settings-->
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">
+                  <label tooltip-placement="bottom" tooltip="Use health check settings to periodically check the state
+                   of a Rest API. If a health check fails alarm will trigger if system is armed!">
+                      Health check settings
+                  </label>
+                </span>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <label class="col-sm-4" tooltip-placement="bottom"
+                               tooltip="Itylos will only check the http response status code and only if it is 200 the
+                               request is considered successfull.">URIs to monitor:</label>
+
+                        <div class="col-sm-12">
+                            <table>
+                                <tr ng-repeat="healthCheck in healthChecks track by $index">
+                                    <td>
+                                        <p>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a editable-text="healthCheck.url"
+                                                   class="ng-scope ng-binding editable editable-click">
+                                                    {{healthCheck.url}}
+                                                </a>
+
+                                                <button style="margin-left: 20px;margin-right: 20px" type="button"
+                                                        class="btn btn-danger btn-sm" tooltip-placement="bottom"
+                                                        tooltip="Delete uri   {{healthCheck.url}}"
+                                                        ng-click="removeUriFromHealthChecks($index)"
+                                                        ng-disabled="alarmIsActive">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label style="font-style: italic"> (Last checked at
+                                                    {{healthCheck.lastTimeChecked | date:'HH:mm:ss'}} with http status
+                                                    code
+                                                    {{healthCheck.lastCheckStatusCode}})</label>
+                                            </div>
+                                        </div>
+                                        </p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <button class="btn m-b-xs btn-sm btn-default btn-addon"
+                                                ng-click="addUrlToHealthChecks()"><i
+                                                class="fa fa-plus"></i>Add new
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="panel-footer text-right bg-light lter">
+                <button tooltip-placement="bottom" tooltip="Update health check settings"
+                        type="submit" class="btn btn-success" ng-disabled="alarmIsActive"
+                        ng-click="updateHealthCheckSettings()">Save
+                </button>
+            </footer>
+        </div>
 
     </div>
 
 
     <!-- webhook settings-->
-    <div class="col-sm-6">
+    <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">Webhooks settings</span>
+                    <span class="h4">
+                <label tooltip-placement="bottom" tooltip="Use webhooks to easily connect external systems for itylos
+                events. For example webhooks can be used to trigger a custom made TCP/IP siren. Consult itylos
+                documentation page for detailed description.">
+                    Webhook settings
+                </label>
+                        </span>
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
                     <div class="form-group">
-
                         <label class="col-sm-4 control-label"> Enable webhooks:</label>
 
                         <div class="col-sm-6">
@@ -522,12 +688,17 @@
     </div>
 
     <!-- pushbullet settings -->
-    <div class="col-sm-6">
+    <div class="col-lg-6">
         <form name="form-contact" class="form-validation" ng-submit="updatePushbulletSettings()">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <!--<img src="img/pushbullet_logo.png" alt="." style="width: 25px; margin-right: 20px">-->
-                    <span class="h4">Pushbullet Settings</span>
+                   <span class="h4">
+                <label tooltip-placement="bottom" tooltip="Use pushbullet integration to get instant notifications
+                directly to your devices.">
+                    Pushbullet settings
+                </label>
+
+                </span>
                 </div>
                 <div class="alert ng-isolate-scope alert-danger alert-dismissable"
                      role="alert" type="danger" ng-show="showItylosCouldNotRetrievePushbulletDevices">
@@ -682,75 +853,6 @@
         </form>
     </div>
 
-    <!-- version settings-->
-    <div class="col-sm-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span class="h4">System Version</span>
-            </div>
-            <div class="alert ng-isolate-scope alert-danger alert-dismissable"
-                 role="alert" type="danger" ng-show="showNotUpToDateAlert">
-                <div>
-                    <span class="ng-binding ng-scope">An updated version ({{updatedVersion}}) has been published.
-                        Follow <a href="{{updatedVersionUrl}}" target="_blank">this</a> link to update your Itylos ({{module}}) setup.
-                    </span>
-                </div>
-            </div>
-            <div class="alert ng-isolate-scope alert-success alert-dismissable"
-                 role="alert" type="success" ng-show="showUpToDateAlert">
-                <div>
-                    <span class="ng-binding ng-scope">Your Itylos ({{module}}) setup is already updated to the latest version
-                        ({{updatedVersion}}). Congrats!</span>
-                </div>
-            </div>
 
-            <div class="panel-body">
-                <div class="form-horizontal">
-                    <div class="form-group">
-
-                        <label class="col-sm-3 control-label">
-                            Current Core API Version:
-                        </label>
-
-                        <div class="col-sm-2 control-label">
-                            <label>
-                                {{currentVersion.tag_name}}
-                            </label>
-                        </div>
-                        <div class="col-sm-4 control-label">
-                            <button tooltip-placement="bottom"
-                                    tooltip="Check if newer version for Core API has been released"
-                                    data-placement="top" type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
-                                    ng-click="getLatestCoreApiRelease()">
-                                <i class="fa fa-refresh"></i>{{checkCoreApiVersionButtonText}}
-                            </button>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">
-                            Current Web UI Version:
-                        </label>
-
-                        <div class="col-sm-2 control-label">
-                            <label>
-                                {{webUiVersion}}
-                            </label>
-                        </div>
-                        <div class="col-sm-4 control-label">
-                            <button tooltip-placement="bottom"
-                                    tooltip="Check if newer version for Web UI has been released"
-                                    type="button" class="btn m-b-xs btn-sm btn-info btn-addon"
-                                    ng-click="getLatestWebUIRelease()">
-                                <i class="fa fa-refresh"></i>{{checkWebUIVersionButtonText}}
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>

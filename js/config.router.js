@@ -11,7 +11,7 @@ angular.module('app')
             $rootScope.$stateParams = $stateParams;
             $http.get('./js/config/config.json').success(function (data) {
                 $rootScope.apiEndpoints = data;
-                $rootScope.apiEndpoints.domain = $location.protocol() + "://" +  "localhost" + ":18081";
+                $rootScope.apiEndpoints.domain = $location.protocol() + "://" + $location.host() + ":18081";
             });
 
             /* check the first time for token */
@@ -52,7 +52,7 @@ angular.module('app')
                 }
             }, 1200000);
 
-            var socket = new WebSocket("ws://" + "localhost" + ":19997/events");
+            var socket = new WebSocket("ws://" + $location.host() + ":19997/events");
             socket.onmessage = function (event) {
                 //$state.forceReload();
                 $rootScope.$apply(function () {
@@ -189,7 +189,20 @@ angular.module('app')
                     },
                     templateUrl: 'tpl/statistics/statistics.html'
                 })
-
+                .state('app.health_checks', {
+                    url: '/health_checks',
+                    resolve: {
+                        deps: ['$ocLazyLoad',
+                            function ($ocLazyLoad) {
+                                return $ocLazyLoad.load('xeditable').then(
+                                    function () {
+                                        return $ocLazyLoad.load('js/controllers/health_checks/health_checks.controller.js');
+                                    }
+                                );
+                            }]
+                    },
+                    templateUrl: 'tpl/health_checks/health_checks.html'
+                })
                 .state('access', {
                     url: '/access',
                     template: '<div ui-view class="fade-in-right-big smooth"></div>'

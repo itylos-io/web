@@ -67,15 +67,14 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
-                .success(function (data, status, headers, config) {
-                    $scope.sensorTypes = data.response.types;
-                    //set default sensor type at select
-                    $scope.newSensor = {
-                        typeId: $scope.sensorTypes[0],
-                        active: true
-                    };
-                })
+            }).success(function (data, status, headers, config) {
+                $scope.sensorTypes = data.response.types;
+                //set default sensor type at select
+                $scope.newSensor = {
+                    typeId: $scope.sensorTypes[0],
+                    active: true
+                };
+            });
 
             //Close 'Create Sensor' PopUp
             $scope.cancel = function () {
@@ -93,20 +92,18 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
                     isActive: $scope.newSensor.active
                 };
                 $http({
-                    method: 'PUT',
+                    method: 'POST',
                     url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.createSensor + '?token=' + token,
                     data: JSON.stringify(data),
                     dataType: 'json',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                })
-                    .success(function (data, status, headers, config) {
-                        $modalInstance.close(data);
-                    })
-                    .error(function (data, status, headers, config) {
-                        $scope.error = true;
-                    });
+                }).success(function (data, status, headers, config) {
+                    $modalInstance.close(data);
+                }).error(function (data, status, headers, config) {
+                    $scope.error = true;
+                });
             };
         }]);
 
@@ -114,7 +111,7 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
     $scope.deleteSensor = function (oidata) {
         var data = {
             oid: oidata
-        }
+        };
         $http({
             method: 'DELETE',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.deleteSensor + '?token=' + token,
@@ -123,10 +120,9 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
             headers: {
                 'Content-Type': 'application/json'
             }
+        }).success(function (data, status, headers, config) {
+            $scope.sensors = data.response.sensors;
         })
-            .success(function (data, status, headers, config) {
-                $scope.sensors = data.response.sensors;
-            })
     };
 
     //Open PopUp for Edit Sensor
@@ -158,26 +154,25 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
-                .success(function (data, status, headers, config) {
-                    $scope.sensorTypes = data.response.types;
-                    for (var i = 0; i < $scope.sensorTypes.length; i++) {
-                        if ($scope.sensorTypes[i].id === sensor.sensorTypeId) {
-                            break;
-                        }
+            }).success(function (data, status, headers, config) {
+                $scope.sensorTypes = data.response.types;
+                for (var i = 0; i < $scope.sensorTypes.length; i++) {
+                    if ($scope.sensorTypes[i].id === sensor.sensorTypeId) {
+                        break;
                     }
-                    $scope.editSensor = {
-                        isActive: sensor.isActive,
-                        typeId: $scope.sensorTypes[i],
-                        oid: sensor.oid,
-                        sensorId: sensor.sensorId,
-                        name: sensor.name,
-                        description: sensor.description,
-                        location: sensor.location,
-                        dateRegistered: sensor.dateRegistered,
-                        zones: sensor.zones
-                    };
-                })
+                }
+                $scope.editSensor = {
+                    isActive: sensor.isActive,
+                    typeId: $scope.sensorTypes[i],
+                    oid: sensor.oid,
+                    sensorId: sensor.sensorId,
+                    name: sensor.name,
+                    description: sensor.description,
+                    location: sensor.location,
+                    dateRegistered: sensor.dateRegistered,
+                    zones: sensor.zones
+                };
+            });
 
             //Close 'Edit Sensor' PopUp
             $scope.cancel = function () {
@@ -195,21 +190,20 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
                     sensorTypeId: $scope.editSensor.typeId.id,
                     isActive: $scope.editSensor.isActive
                 };
+
                 $http({
-                    method: 'POST',
+                    method: 'PUT',
                     url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.editSensor + '?token=' + token,
                     data: JSON.stringify(data),
                     dataType: 'json',
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                })
-                    .success(function (data, status, headers, config) {
-                        $modalInstance.close(data);
-                    })
-                    .error(function (data, status, headers, config) {
-                        $scope.error = true;
-                    });
+                }).success(function (data, status, headers, config) {
+                    $modalInstance.close(data);
+                }).error(function (data, status, headers, config) {
+                    $scope.error = true;
+                });
             };
         }]);
 
@@ -226,20 +220,18 @@ app.controller('SensorsCnfgCtrl', ['$scope', '$http', '$state', '$localStorage',
             isActive: !sensor.isActive
         };
         $http({
-            method: 'POST',
+            method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.editSensor + '?token=' + token,
             data: JSON.stringify(data),
             dataType: 'json',
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
-            .success(function (data, status, headers, config) {
-                $scope.sensors = data.response.sensors;
-            })
-            .error(function (data, status, headers, config) {
-                $scope.error = true;
-            });
+        }).success(function (data, status, headers, config) {
+            $scope.sensors = data.response.sensors;
+        }).error(function (data, status, headers, config) {
+            $scope.error = true;
+        });
     };
 
 

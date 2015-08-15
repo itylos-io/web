@@ -1,6 +1,5 @@
 'use strict';
 
-/* Controllers */
 app.controller('RedirectCtrl', ['$scope', '$http', '$state', '$localStorage', '$location', '$timeout', function ($scope, $http, $state, $localStorage, $location, $timeout) {
     if (!angular.isDefined($localStorage.authed)) {
         $location.path('/access/signin').replace();
@@ -19,15 +18,13 @@ app.controller('RedirectCtrl', ['$scope', '$http', '$state', '$localStorage', '$
         headers: {
             'Content-Type': 'application/json'
         }
-    })
-        .success(function (data, status, headers, config) {
-            $scope.appUser = data.response.user;
-            $localStorage.isAdmin = data.response.user.isAdmin;
-            $scope.isAdmin = $localStorage.isAdmin;
-        })
-        .error(function (data, status, headers, config) {
-            console.log(status);
-        });
+    }).success(function (data, status, headers, config) {
+        $scope.appUser = data.response.user;
+        $localStorage.isAdmin = data.response.user.isAdmin;
+        $scope.isAdmin = $localStorage.isAdmin;
+    }).error(function (data, status, headers, config) {
+        console.log(status);
+    });
 
     $scope.logout = function () {
         $localStorage.$reset();

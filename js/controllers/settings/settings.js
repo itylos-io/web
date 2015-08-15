@@ -2,7 +2,7 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
     'editableThemes', '$modal',
     function ($scope, $http, $state, $localStorage, $filter, editableOptions, editableThemes, $modal) {
 
-        var WEB_UI_GITHUB_RELEASES= "https://api.github.com/repos/kerberos-io/machinery/releases/latest";
+        var WEB_UI_GITHUB_RELEASES = "https://api.github.com/repos/kerberos-io/machinery/releases/latest";
 
         editableThemes.bs3.inputClass = 'input-sm';
         editableThemes.bs3.buttonsClass = 'btn-sm';
@@ -42,6 +42,12 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             .success(function (data) {
                 if (data.response.alarmStatus.currentStatus == 'DISARMED') $scope.alarmIsActive = false;
                 else $scope.alarmIsActive = true;
+            });
+
+        //Get health check settings
+        $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.healthCheckSettings + '?token=' + token)
+            .success(function (data) {
+                $scope.healthChecks = data.response.healthChecks;
             });
 
         //Get settings
@@ -84,13 +90,13 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             }).success(function (data, status, headers, config) {
                 $scope.checkCoreApiVersionButtonText = "Check";
                 $scope.updatedVersion = data.response.tag_name;
-                $scope.updatedVersionUrl =data.response.html_url;
+                $scope.updatedVersionUrl = data.response.html_url;
                 $scope.module = "Core API";
 
                 if (data.response.tag_name != $scope.currentVersion) {
                     $scope.showNotUpToDateAlert = true;
                     $scope.showUpToDateAlert = false;
-                }else{
+                } else {
                     $scope.showNotUpToDateAlert = false;
                     $scope.showUpToDateAlert = true;
                 }
@@ -103,20 +109,20 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             //Get current version
             $http({
                 method: 'GET',
-                url:WEB_UI_GITHUB_RELEASES,
+                url: WEB_UI_GITHUB_RELEASES,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).success(function (data, status, headers, config) {
                 $scope.checkWebUIVersionButtonText = "Check";
                 $scope.updatedVersion = data.tag_name;
-                $scope.updatedVersionUrl =data.html_url;
+                $scope.updatedVersionUrl = data.html_url;
                 $scope.module = "Web UI";
 
                 if (data.tag_name != $scope.webUiVersion) {
                     $scope.showNotUpToDateAlert = true;
                     $scope.showUpToDateAlert = false;
-                }else{
+                } else {
                     $scope.showNotUpToDateAlert = false;
                     $scope.showUpToDateAlert = true;
                 }
@@ -146,6 +152,31 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
                 }
             }).success(function (data, status, headers, config) {
                 $scope.settings = data.response.settings;
+            }).error(function (data, status, headers, config) {
+                $scope.error = true;
+            });
+        };
+
+        //Update health check settings
+        $scope.updateHealthCheckSettings = function () {
+            $scope.uris = [];
+            for (var i = 0; i < $scope.healthChecks.length; i++) {
+                $scope.uris.push( $scope.healthChecks[i].url )
+            }
+            var data = {
+                endpoints:$scope.uris
+            };
+
+            $http({
+                method: 'PUT',
+                url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.healthCheckSettings + '?token=' + token,
+                data: JSON.stringify(data),
+                dataType: 'json',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function (data, status, headers, config) {
+                $scope.healthChecks = data.response.healthChecks;
             }).error(function (data, status, headers, config) {
                 $scope.error = true;
             });
@@ -302,7 +333,7 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             });
         };
 
-        $scope.closeAllAlerts = function(){
+        $scope.closeAllAlerts = function () {
             $scope.showItylosIsTryingToCommunicateWithKerberos = false;
             $scope.showItylosFailedToCommunicateWithKerberos = false;
             $scope.showItylosSuccessfullyCommunicatedWithKerberos = false;
@@ -329,6 +360,15 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
             return re.test(email);
         }
 
+        // Add new url to health checks
+        $scope.addUrlToHealthChecks = function () {
+            $scope.healthChecks.push({
+                "url": "http://localhost:8080/api/health",
+                "lastTimeChecked": 0,
+                "lastCheckStatusCode": 0
+            });
+        };
+
         // Add a Item to the list
         $scope.addNewEmailToSettings = function () {
             $scope.settings.emailSettings.emailsToNotify.push("john@smith.com");
@@ -342,6 +382,11 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
         // Add new mobile to nexmo settings
         $scope.addNewMobileToNexmoSettings = function () {
             $scope.settings.nexmoSettings.mobilesToNotify.push("00306978787777");
+        };
+
+        // Remove uri from health checks
+        $scope.removeUriFromHealthChecks = function (index) {
+            $scope.healthChecks.splice(index, 1);
         };
 
         // Remove Email

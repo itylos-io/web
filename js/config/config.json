@@ -1,5 +1,4 @@
 {
-  "domain": "192.168.2.100",
   "services": {
     "alarmHistory":"/api/v1/alarm/status/history",
     "login": "/api/v1/users/login",
@@ -31,6 +30,7 @@
     "kerberosInstanceName":"/api/v1/settings/kerberos/instance_name",
     "currentVersion":"/api/v1/settings/current_version",
     "latestVersion":"/api/v1/settings/latest_release",
-    "sensorStatistics":"/api/v1/statistics/sensors"
+    "sensorStatistics":"/api/v1/statistics/sensors",
+    "healthCheckSettings":"/api/v1/settings/health_checks"
   }
 }

@@ -30,8 +30,6 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
 
             // When alarm status changes
             if ($scope.socketEvent.eventType == "updatedAlarmStatus") {
-
-
                 var updatedAlarmStatusEvent = {};
                 updatedAlarmStatusEvent.type = "updatedAlarmStatus";
                 updatedAlarmStatusEvent.date = new Date();
@@ -108,6 +106,22 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
             }
         }
     });
+
+    //get app user
+    $http({
+        method: 'GET',
+        url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.myUser + '?token=' + token,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).success(function (data, status, headers, config) {
+        $scope.appUser = data.response.user;
+        $localStorage.isAdmin = data.response.user.isAdmin;
+        $scope.isAdmin = $localStorage.isAdmin;
+    }).error(function (data, status, headers, config) {
+        console.log(status);
+    });
+
 
     // get 20 latest sensors events
     $http.get($scope.apiEndpoints.domain + $scope.apiEndpoints.services.getSensorEvents + '?limit=20&token=' + token)

@@ -1,7 +1,5 @@
 'use strict';
 
-/* Controllers */
-
 angular.module('app')
     .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$location', '$state','$http', function ($scope, $translate, $localStorage, $window, $location, $state, $http) {
         //sign in redirect
@@ -51,10 +49,8 @@ angular.module('app')
         }
         $scope.$watch('app.settings', function () {
             if ($scope.app.settings.asideDock && $scope.app.settings.asideFixed) {
-                // aside dock and fixed must set the header fixed.
                 $scope.app.settings.headerFixed = true;
             }
-            // save to local storage
             $localStorage.settings = $scope.app.settings;
         }, true);
 
