@@ -14,47 +14,52 @@ angular.module('app')
                 $rootScope.apiEndpoints.domain = $location.protocol() + "://" + $location.host() + ":18081";
             });
 
+            var ONE_MINUTE = 60000;
+            var TWO_MINUTES = 120000;
+
             /* check the first time for token */
             if (angular.isDefined($localStorage.authed)) {
                 var now = new Date().getTime();
                 var expireTime = $localStorage.authed.expireTime;
-                //console.log(expireTime - now);
-                if (expireTime - now - 2300000 <= 0) {
+                // If token has expired redirect sign in page
+                if (now >= expireTime) {
                     $localStorage.$reset();
                     $location.path('/access/signin').replace();
-                } else {
-                    //TODO new token?
                 }
             }
 
-            /* check every 30 min the token */
+            /* check every 1 minute for token's expiration time */
             $interval(function () {
                 // console.log('TimerPetros');
                 if (angular.isDefined($localStorage.authed)) {
                     var now = new Date().getTime();
                     var expireTime = $localStorage.authed.expireTime;
-                    if (expireTime - now - 2300000 <= 0) {
+
+                    // If token has expired redirect sign in page
+                    if (now >= expireTime) {
                         $localStorage.$reset();
                         $location.path('/access/signin').replace();
-                    } else {
+                    }
+
+                    // If token is about to expire in 2 minutes, update token
+                    if (expireTime - now <= TWO_MINUTES) {
                         $http({
                             method: 'POST',
                             url: $rootScope.apiEndpoints.domain + $rootScope.apiEndpoints.services.updateToken + '?token=' + $localStorage.authed.token
-                        })
-                            .success(function (data, status, headers, config) {
-                                $localStorage.authed = data.response.tokenData;
-                            })
-                            .error(function (data, status, headers, config) {
-                                $localStorage.$reset();
-                                $location.path('/access/signin').replace();
-                            });
+                        }).success(function (data, status, headers, config) {
+                            $localStorage.authed = data.response.tokenData;
+                        }).error(function (data, status, headers, config) {
+                            $localStorage.$reset();
+                            $location.path('/access/signin').replace();
+                        });
                     }
+
+
                 }
-            }, 1200000);
+            }, ONE_MINUTE);
 
             var socket = new WebSocket("ws://" + $location.host() + ":19997/events");
             socket.onmessage = function (event) {
-                //$state.forceReload();
                 $rootScope.$apply(function () {
                     $rootScope.socketEvent = JSON.parse(event.data);
                 });

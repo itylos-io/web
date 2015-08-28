@@ -5520,7 +5520,8 @@ table .cr {
 }
 
 .dashboardScroller {
-    height: 225px;
+    min-height: 100px;
+    max-height: 525px;
     overflow-y: hidden;
     position: relative;
 }

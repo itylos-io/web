@@ -29,7 +29,7 @@ app.controller('SettingsCtrl', ['$scope', '$http', '$state', '$localStorage', '$
         $scope.updatedVersionUrl = "";
         $scope.checkCoreApiVersionButtonText = 'Check';
         $scope.checkWebUIVersionButtonText = 'Check';
-        $scope.webUiVersion = "v1.0.3";
+        $scope.webUiVersion = "v1.0.0";
 
 
         //get the token from local storage

@@ -258,34 +258,34 @@ app.controller('DashboardCtrl', ['$scope', '$localStorage', '$http', 'ModalServi
         } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 1 || receivedEvent.sensorTypeId == 2)) { // door sensor and CLOSED
             message = receivedEvent.sensorName + " is now closed";
         } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and OPEN
-            message = "Motion detected in " + receivedEvent.sensorName;
+            message = "Motion detected at " + receivedEvent.sensorName;
         } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 3 || receivedEvent.sensorTypeId == 4)) { // door sensor and CLOSED
-            message = "Motion stopped in " + receivedEvent.sensorName;
+            message = "Motion stopped at " + receivedEvent.sensorName;
         } else if (receivedEvent.status == 1 && (receivedEvent.sensorTypeId == 5)) { // kerberos AND motion detected
-            message = "Motion detected from kerberos in " + receivedEvent.sensorName;
+            message = "Motion detected from kerberos at " + receivedEvent.sensorName;
         } else if (receivedEvent.status == 0 && (receivedEvent.sensorTypeId == 5)) { // kerberos AND motion detected
-            message = "Motion stopped  in " + receivedEvent.sensorName;
+            message = "Motion stopped at " + receivedEvent.sensorName;
         }
         return message;
     }
 
     // Play sounds depending on received event
     function playSounds(event) {
-        if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'DISARMED') {
-            ngAudio.play("sounds/system_disarmed.wav");
-        } else if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'ARMED') {
-            ngAudio.play("sounds/system_armed.wav");
-        } else if (event.eventType == "newSensorEvent" && event.message.status == 1) {
-            ngAudio.play("sounds/sensor_event_1.wav");
-        } else if (event.eventType == "newSensorEvent" && event.message.status == 0) {
-            ngAudio.play("sounds/sensor_event_0.wav");
-        }
+        //if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'DISARMED') {
+        //    ngAudio.play("sounds/system_disarmed.wav");
+        //} else if (event.eventType == "updatedAlarmStatus" && event.message.currentStatus == 'ARMED') {
+        //    ngAudio.play("sounds/system_armed.wav");
+        //} else if (event.eventType == "newSensorEvent" && event.message.status == 1) {
+        //    ngAudio.play("sounds/sensor_event_1.wav");
+        //} else if (event.eventType == "newSensorEvent" && event.message.status == 0) {
+        //    ngAudio.play("sounds/sensor_event_0.wav");
+        //}
     }
 
     // Change zone status
     $scope.changeZoneStatus = function (z) {
         $http({
-            method: 'POST',
+            method: 'PUT',
             url: $scope.apiEndpoints.domain + $scope.apiEndpoints.services.zoneStatus + '?token=' + token,
             data: JSON.stringify({zoneId: z.oid, status: z.status}),
             dataType: 'json',
